@@ -11,6 +11,11 @@ before it, by code in `src/`, so any layer can be rebuilt from `01_raw`.
 | `05_model_input` | dbt marts: hourly/daily by station, exceedances, ICA (Parquet). | dbt (transform pipeline) |
 | `08_reporting` | Metrics (JSON/CSV) and figures (PNG) used in the README and reports. | Analysis code |
 
+## Landing layout
+
+`01_raw/siata/pm25/<YYYY-MM-DD>/stations.json` and `<station code>.json`, one folder per
+run date (America/Bogota). Files are written once, atomically, and never changed.
+
 ## Rules
 
 - `01_raw` is read-only. If raw data is wrong, fix it in `02_intermediate`.

@@ -9,6 +9,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- `make extract` lands the SIATA stations list and each station's 72 h series in
+  `data/01_raw/siata/pm25/<date>/`, incrementally and idempotently: existing files are
+  never refetched, writes are atomic, malformed responses are not landed, and failed
+  stations fail the run after the others are landed (#6). Offline tests cover idempotence,
+  partial failures and malformed responses (#7).
 - `aburra_air.data.siata`: SIATA geoportal client (`httpx`) with `tenacity` retries on
   timeouts, 429 and 5xx, an identifying User-Agent and request logging; offline tests on
   recorded responses in `tests/fixtures/siata` (#5).
