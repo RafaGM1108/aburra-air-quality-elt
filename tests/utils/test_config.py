@@ -16,7 +16,7 @@ def test_load_config_resolves_paths_against_project_root() -> None:
 
 def test_find_config_file_walks_up_from_subdirectory(monkeypatch: pytest.MonkeyPatch) -> None:
     monkeypatch.delenv(CONF_ENV_VAR, raising=False)
-    assert find_config_file(ROOT / "notebooks" / "1-data") == ROOT / "conf" / "base.yaml"
+    assert find_config_file(ROOT / "src" / "aburra_air") == ROOT / "conf" / "base.yaml"
 
 
 def test_find_config_file_uses_env_var(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:

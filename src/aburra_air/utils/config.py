@@ -57,7 +57,7 @@ def find_config_file(start: Path | None = None) -> Path:
 
     Uses ``$ABURRA_AIR_CONF`` if set; otherwise walks up from ``start`` (default: the
     current directory) until it finds ``conf/base.yaml``. This works from the project
-    root and from ``notebooks/<stage>/``.
+    root and from any subdirectory.
 
     Args:
         start: Directory to start searching from.

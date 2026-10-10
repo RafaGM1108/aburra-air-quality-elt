@@ -47,7 +47,6 @@ convention = "google"
 
 [tool.ruff.lint.per-file-ignores]
 "tests/**" = ["D"]
-"notebooks/**" = ["D"]
 "**/__main__.py" = ["D"]
 
 # --- mypy -------------------------------------------------------------------

@@ -37,8 +37,7 @@ dist/
 coverage.xml
 htmlcov/
 
-# --- Notebooks / tools -------------------------------------------------------
-.ipynb_checkpoints/
+# --- Tools -------------------------------------------------------------------
 site/
 .DS_Store
 .idea/

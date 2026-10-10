@@ -27,8 +27,8 @@
 8. Small commits with conventional commit messages (`feat:`, `fix:`, `docs:`, `test:`,
    `refactor:`, `chore:`, `ci:`, `data:`).
 9. Dependencies only via `uv add` (dev tools with `--group dev`).
-10. Reusable logic lives in `src/`; notebooks are for exploration and narrative and import
-    from `src/`.
+10. No notebooks. All logic, including exploratory and statistical analyses, lives in
+    `src/` and runs with `make`; outputs go to `data/08_reporting` and conclusions to `docs/`.
 11. Type hints and docstrings on all public functions; tests for every `src` module; target
     coverage >= 80%.
 12. Everything in English: code, comments, docs, README, commits.

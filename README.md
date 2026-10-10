@@ -53,7 +53,6 @@ from a file in [`data/08_reporting/`](data/08_reporting/).
 ├── conf/base.yaml          # Paths and parameters
 ├── data/                   # Layered data (01_raw … 08_reporting), see data/README.md
 ├── docs/                   # MkDocs Material site
-├── notebooks/              # Numbered by stage (1-data … 8-reports), see notebooks/README.md
 ├── src/aburra_air/
 │   ├── data/               # Extractors and loaders
 │   ├── pipelines/          # extract_pipeline, load_pipeline, transform_pipeline
