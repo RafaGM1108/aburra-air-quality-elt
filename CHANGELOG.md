@@ -9,6 +9,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- `aburra_air.data.siata`: SIATA geoportal client (`httpx`) with `tenacity` retries on
+  timeouts, 429 and 5xx, an identifying User-Agent and request logging; offline tests on
+  recorded responses in `tests/fixtures/siata` (#5).
 - Project scaffold from `ds-project-template`: `aburra_air` package with extract, load and
   transform pipeline stubs, config, logging, Streamlit app stub, CI, pre-commit.
 - `docs/data.md`: SIATA data access findings and Resolución 2254 de 2017 thresholds.
