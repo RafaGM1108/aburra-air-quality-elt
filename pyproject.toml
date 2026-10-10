@@ -68,7 +68,8 @@ exclude_dirs = ["tests", ".venv"]
 # --- pytest / coverage ------------------------------------------------------
 [tool.pytest.ini_options]
 testpaths = ["tests"]
-addopts = "--import-mode=importlib"
+addopts = "--import-mode=importlib -m 'not live'"
+markers = ["live: calls the real SIATA API; run with `make contract` (weekly in CI)"]
 
 [tool.coverage.run]
 source = ["aburra_air"]

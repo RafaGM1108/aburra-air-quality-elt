@@ -1,0 +1,44 @@
+name: SIATA contract
+
+# The SIATA geoportal API is undocumented and can change without notice. Check weekly
+# that it still returns what the pipeline relies on, and open an issue when it does not.
+on:
+  schedule:
+    - cron: "0 13 * * 1"  # Mondays 08:00 America/Bogota
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  contract:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: astral-sh/setup-uv@v10.2.0
+        with:
+          python-version: "3.12"
+          enable-cache: true
+
+      - name: Install dependencies
+        run: uv sync --locked
+
+      - name: Check the live SIATA API
+        run: make contract
+
+      - name: Open or update an issue on failure
+        if: failure()
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        run: |
+          title="SIATA API contract check failed"
+          number=$(gh issue list --state open --search "in:title \"$title\"" --json number --jq '.[0].number')
+          if [ -n "$number" ]; then
+            gh issue comment "$number" --body "Failed again: $RUN_URL"
+          else
+            gh issue create --title "$title" --label type:bug \
+              --body "The weekly check against the live SIATA geoportal failed: $RUN_URL. The extractor may be landing data the load step cannot read. See docs/data.md for the endpoints."
+          fi
