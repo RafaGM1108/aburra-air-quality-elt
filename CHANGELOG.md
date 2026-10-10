@@ -12,3 +12,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Project scaffold from `ds-project-template`: `aburra_air` package with extract, load and
   transform pipeline stubs, config, logging, Streamlit app stub, CI, pre-commit.
 - `docs/data.md`: SIATA data access findings and Resolución 2254 de 2017 thresholds.
+- CI job `actionlint`: lints the GitHub Actions workflows on every PR.
+
+### Removed
+
+- `notebooks/` and their tooling: analyses are scripts in `src/` run with `make`.

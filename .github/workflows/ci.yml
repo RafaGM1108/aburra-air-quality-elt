@@ -39,3 +39,14 @@ jobs:
           files: coverage.xml
           use_oidc: true
           fail_ci_if_error: true
+
+  # The daily ELT runs only on schedule, so a broken workflow would fail silently.
+  actionlint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Lint GitHub Actions workflows
+        run: |
+          bash <(curl -fsSL https://raw.githubusercontent.com/rhysd/actionlint/main/scripts/download-actionlint.bash)
+          ./actionlint -color
