@@ -1,6 +1,6 @@
 PACKAGE := aburra_air
 
-.PHONY: help install lint typecheck test coverage extract load transform elt app docs clean
+.PHONY: help install lint typecheck test coverage contract extract load transform elt app docs clean
 
 help:  ## Show this help
 	@grep -E '^[a-z]+:.*## ' $(MAKEFILE_LIST) | awk -F':.*## ' '{printf "  %-10s %s\n", $$1, $$2}'
@@ -22,6 +22,9 @@ test:  ## Run the test suite
 
 coverage:  ## Run tests with a coverage report (terminal + htmlcov/)
 	uv run pytest --cov --cov-report=term --cov-report=html
+
+contract:  ## Check the live SIATA API still has the fields the pipeline relies on
+	uv run pytest -m live
 
 extract:  ## Run the extract pipeline (APIs -> 01_raw)
 	uv run python -m $(PACKAGE).pipelines.extract_pipeline

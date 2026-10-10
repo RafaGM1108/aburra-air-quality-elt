@@ -9,6 +9,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- Weekly `SIATA contract` workflow (and `make contract`): checks the live geoportal API
+  still returns the fields the pipeline relies on, and opens or updates a `type:bug` issue
+  when it does not. Live tests are marked `live` and excluded from the default run (#8).
 - `make extract` lands the SIATA stations list and each station's 72 h series in
   `data/01_raw/siata/pm25/<date>/`, incrementally and idempotently: existing files are
   never refetched, writes are atomic, malformed responses are not landed, and failed

@@ -31,6 +31,9 @@ Implications for the extractor (Phase 1):
   etc." becomes "PM2.5 live, other pollutants historical only" unless SIATA grants access
   (see below).
 - `codigo` matches `codigoSerial` in the historical files, so it is the station key.
+- The 72 h series lags the 24 h mean: on 2026-10-10 at ~14:50 the series ended at 07:00
+  while `fechaFin` was 14:00. Schedule the daily run with that lag in mind (Phase 4).
+- The weekly `SIATA contract` workflow (`make contract`) checks these fields still exist.
 
 ### Historical feed: `EntregaData1` JSON files (frozen)
 
