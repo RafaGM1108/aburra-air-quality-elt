@@ -1,0 +1,45 @@
+PACKAGE := aburra_air
+
+.PHONY: help install lint typecheck test coverage extract load transform elt app docs clean
+
+help:  ## Show this help
+	@grep -E '^[a-z]+:.*## ' $(MAKEFILE_LIST) | awk -F':.*## ' '{printf "  %-10s %s\n", $$1, $$2}'
+
+install:  ## Install all dependencies and the pre-commit hooks
+	uv sync
+	uv run pre-commit install
+
+lint:  ## Lint, check formatting and run the security scan
+	uv run ruff check .
+	uv run ruff format --check .
+	uv run bandit -c pyproject.toml -r src -q
+
+typecheck:  ## Static type checking
+	uv run mypy
+
+test:  ## Run the test suite
+	uv run pytest
+
+coverage:  ## Run tests with a coverage report (terminal + htmlcov/)
+	uv run pytest --cov --cov-report=term --cov-report=html
+
+extract:  ## Run the extract pipeline (APIs -> 01_raw)
+	uv run python -m $(PACKAGE).pipelines.extract_pipeline
+
+load:  ## Run the load pipeline (01_raw -> DuckDB)
+	uv run python -m $(PACKAGE).pipelines.load_pipeline
+
+transform:  ## Run the transform pipeline (dbt)
+	uv run python -m $(PACKAGE).pipelines.transform_pipeline
+
+elt: extract load transform  ## Run the full ELT
+
+app:  ## Launch the Streamlit app
+	uv run streamlit run src/$(PACKAGE)/app/main.py
+
+docs:  ## Serve the documentation locally
+	uv run mkdocs serve
+
+clean:  ## Remove caches and build artifacts
+	rm -rf .mypy_cache .pytest_cache .ruff_cache htmlcov .coverage coverage.xml site dist build
+	find . -type d -name __pycache__ -prune -exec rm -rf {} +

@@ -1,0 +1,19 @@
+# Project configuration. Paths are relative to the project root.
+# Override the file location with the ABURRA_AIR_CONF environment variable.
+project:
+  name: aburra-air-quality-elt
+  random_seed: 42
+
+# ELT layers: 01_raw = landing JSON, 02_intermediate = dbt intermediate,
+# 03_primary = dbt staging, 05_model_input = dbt marts, 08_reporting = analysis outputs.
+paths:
+  raw: data/01_raw
+  intermediate: data/02_intermediate
+  primary: data/03_primary
+  model_input: data/05_model_input
+  reporting: data/08_reporting
+
+logging:
+  level: INFO
+
+params: {}

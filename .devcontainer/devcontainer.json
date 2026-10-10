@@ -1,0 +1,19 @@
+{
+  "name": "aburra-air-quality-elt",
+  "image": "mcr.microsoft.com/devcontainers/python:3.12",
+  "postCreateCommand": "pip install --user uv && uv sync && uv run pre-commit install",
+  "forwardPorts": [8501],
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "ms-python.python",
+        "ms-toolsai.jupyter",
+        "charliermarsh.ruff",
+        "ms-python.mypy-type-checker",
+        "tamasfe.even-better-toml",
+        "redhat.vscode-yaml",
+        "editorconfig.editorconfig"
+      ]
+    }
+  }
+}
