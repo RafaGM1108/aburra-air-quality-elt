@@ -130,3 +130,23 @@ def station_codes(stations: bytes) -> list[int]:
         return [int(feature["properties"]["codigo"]) for feature in features]
     except (KeyError, TypeError, ValueError) as error:
         raise ValueError(f"Unexpected SIATA stations response: {error!r}") from error
+
+
+def check_series(series: bytes) -> None:
+    """Check that a series response has the fields the load step needs.
+
+    A 200 response can still carry an error page or an empty body; landing it would make
+    the idempotent extract skip that station for the rest of the day.
+
+    Args:
+        series: Body returned by :func:`fetch_series`.
+
+    Raises:
+        ValueError: If the body is not the expected shape.
+    """
+    try:
+        info = json.loads(series)["info"]
+        if len(info["Horas"]) != len(info["PM25_72H"]) or not info["Hora_fin"]:
+            raise ValueError("Horas and PM25_72H differ in length or Hora_fin is empty")
+    except (KeyError, TypeError, ValueError) as error:
+        raise ValueError(f"Unexpected SIATA series response: {error!r}") from error

@@ -56,6 +56,9 @@ convention = "google"
 python_version = "3.12"
 strict = true
 files = ["src", "tests"]
+# Tests import shared fixtures as `tests.conftest`; map files to modules from the src/ and root bases.
+mypy_path = "src"
+explicit_package_bases = true
 plugins = ["pydantic.mypy"]
 
 # --- bandit -----------------------------------------------------------------

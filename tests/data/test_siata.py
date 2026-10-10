@@ -10,11 +10,6 @@ from aburra_air.data import siata
 FIXTURES = Path(__file__).resolve().parents[1] / "fixtures" / "siata"
 
 
-@pytest.fixture(autouse=True)
-def no_backoff(monkeypatch: pytest.MonkeyPatch) -> None:
-    monkeypatch.setattr(siata.get.retry, "sleep", lambda _: None)
-
-
 def client_for(handler: Callable[[httpx.Request], httpx.Response]) -> httpx.Client:
     return siata.make_client(httpx.MockTransport(handler))
 
@@ -50,6 +45,24 @@ def test_station_codes_from_recorded_response() -> None:
 def test_station_codes_rejects_unexpected_shape(body: bytes) -> None:
     with pytest.raises(ValueError, match="Unexpected SIATA stations response"):
         siata.station_codes(body)
+
+
+def test_check_series_accepts_recorded_response() -> None:
+    siata.check_series((FIXTURES / "pm25_72h_12.json").read_bytes())
+
+
+@pytest.mark.parametrize(
+    "body",
+    [
+        b"<html>error</html>",
+        b'{"detail": "Not Found"}',
+        b'{"info": {"Hora_fin": "2026-10-10 07:00:00", "Horas": [1, 2], "PM25_72H": [3.0]}}',
+        b'{"info": {"Hora_fin": "", "Horas": [], "PM25_72H": []}}',
+    ],
+)
+def test_check_series_rejects_unexpected_shape(body: bytes) -> None:
+    with pytest.raises(ValueError, match="Unexpected SIATA series response"):
+        siata.check_series(body)
 
 
 @pytest.mark.parametrize(
