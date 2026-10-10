@@ -53,4 +53,13 @@ sources, endpoint limits and Resolución 2254 de 2017 thresholds in `docs/data.m
   credit SIATA, and do not publish full data as a release asset until SIATA confirms.
 - Roadmap: Phase 0 Setup → 1 Extract → 2 Load and backfill → 3 dbt models →
   4 Orchestration → 5 Analysis → 6 Dashboard → 7 Docs and v1.0.0.
-- GitHub Project URL: TODO (Phase 0).
+
+### GitHub
+
+- Repo: https://github.com/RafaGM1108/aburra-air-quality-elt
+- Kanban board: https://github.com/users/RafaGM1108/projects/12 (user project number `12`,
+  fields Status, Priority, Size).
+- Type labels: `type:feat`, `type:data`, `type:analysis`, `type:model`, `type:docs`,
+  `type:test`, `type:ci`, `type:bug`.
+- `main` is protected: changes land only through PRs with the `test` and `actionlint` CI
+  checks passing.
