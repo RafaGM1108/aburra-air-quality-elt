@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Documentation
 
+- README screenshot replaced with one of the deployed dashboard, map included (#29).
 - The dashboard is deployed on Streamlit Community Cloud (#28):
   <https://aburra-air-quality-elt-2zkrjackvqbdcujyphpcc4.streamlit.app/>, linked from the README badge and `docs/deploy.md`.
 - README (#29): Mermaid architecture diagram, results table and figures from
