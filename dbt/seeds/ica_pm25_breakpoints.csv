@@ -1,0 +1,7 @@
+ica_low,ica_high,pm25_low,pm25_high,category,color
+0,50,0,12,Buena,Verde
+51,100,13,37,Aceptable,Amarillo
+101,150,38,55,Dañina a la salud de grupos sensibles,Naranja
+151,200,56,150,Dañina a la salud,Rojo
+201,300,151,250,Muy dañina a la salud,Púrpura
+301,500,251,500,Peligrosa,Marrón

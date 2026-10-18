@@ -7,5 +7,7 @@ aburra_air:
       type: duckdb
       path: "{{ env_var('ABURRA_AIR_DUCKDB', '../data/03_primary/aburra_air.duckdb') }}"
       threads: 4
+      # Marts are written as Parquet here (dbt-duckdb `external` materialization).
+      external_root: "{{ env_var('ABURRA_AIR_MODEL_INPUT', '../data/05_model_input') }}"
       settings:
         TimeZone: America/Bogota

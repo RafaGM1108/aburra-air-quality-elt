@@ -14,9 +14,23 @@ vars:
   # Values outside this range (µg/m³) are sensor errors, not air quality: set to NULL in staging.
   pm25_min_plausible: 0
   pm25_max_plausible: 1000
+  # Res. 2254 de 2017 24 h PM2.5 limit (µg/m³), in force since 2018-07-01.
+  pm25_24h_limit: 37
+  # 18 of 24 hours (75%): project choice for a valid daily mean, not set by Res. 2254.
+  min_valid_hours: 18
 
 models:
   aburra_air:
     staging:
       +materialized: view
       +schema: staging
+    intermediate:
+      +materialized: external
+      +schema: intermediate
+    marts:
+      +materialized: external
+      +schema: marts
+
+seeds:
+  aburra_air:
+    +schema: seeds
