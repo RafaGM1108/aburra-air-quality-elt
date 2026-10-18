@@ -27,6 +27,10 @@ jobs:
       - name: Install dependencies
         run: uv sync --locked
 
+      # Streamlit Community Cloud installs requirements.txt, so it must match uv.lock.
+      - name: requirements.txt is up to date
+        run: make requirements && git diff --exit-code requirements.txt
+
       - name: Pre-commit
         run: uv run pre-commit run --all-files --show-diff-on-failure
 
