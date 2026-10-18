@@ -21,7 +21,8 @@ WITH stats AS (
         count(*) FILTER (WHERE d.is_valid_day) AS valid_days,
         round(count(*) FILTER (WHERE d.is_valid_day) / ($end::DATE - $start::DATE + 1), 3)
             AS coverage,
-        round(avg(d.pm25_mean), 1) AS pm25_mean,
+        avg(d.pm25_mean) AS mean_unrounded,
+        round(mean_unrounded, 1) AS pm25_mean,
         count(*) FILTER (WHERE d.exceeds_24h_limit) AS exceedance_days,
         round(100 * count(*) FILTER (WHERE d.exceeds_24h_limit)
             / nullif(count(*) FILTER (WHERE d.is_valid_day), 0), 1) AS exceedance_pct
@@ -34,10 +35,10 @@ SELECT
     CASE WHEN coverage >= $min_coverage THEN
         row_number() OVER (
             PARTITION BY coverage >= $min_coverage
-            ORDER BY exceedance_days DESC, pm25_mean DESC
+            ORDER BY exceedance_days DESC, mean_unrounded DESC, station_code
         )
     END AS rank,
-    *
+    * EXCLUDE (mean_unrounded)
 FROM stats
 ORDER BY rank NULLS LAST, station_code
 """
