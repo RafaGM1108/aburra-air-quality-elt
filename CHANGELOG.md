@@ -9,6 +9,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- `data/08_reporting/` refreshed from Daily ELT run #5: adds `forecast_baselines.csv`
+  and the fixed `monthly_profile.png`; `docs/findings.md` gains a forecast section (#27,
+  #57).
 - Station ranking ties break on the unrounded mean, then station code, so reruns give the
   same order (#63).
 - `monthly_profile.png` labels the x axis with `YYYY-MM` instead of a month index (#57).
