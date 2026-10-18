@@ -1,0 +1,49 @@
+version: 2
+
+# ICA at every PM2.5 breakpoint edge of Res. 2254 Table 6, using the real seed. Values
+# between integer breakpoints (e.g. 12.9) are truncated first, so 12.9 is still "Buena".
+unit_tests:
+  - name: ica_at_every_breakpoint_edge
+    model: fct_pm25_daily
+    given:
+      - input: ref('int_pm25_daily')
+        format: csv
+        rows: |
+          station_code,date_local,valid_hours,is_valid_day,pm25_mean,pm25_max
+          1,2024-01-01,24,true,0.0,0
+          2,2024-01-01,24,true,12.0,0
+          3,2024-01-01,24,true,12.9,0
+          4,2024-01-01,24,true,13.0,0
+          5,2024-01-01,24,true,37.0,0
+          6,2024-01-01,24,true,37.5,0
+          7,2024-01-01,24,true,38.0,0
+          8,2024-01-01,24,true,55.0,0
+          9,2024-01-01,24,true,56.0,0
+          10,2024-01-01,24,true,150.0,0
+          11,2024-01-01,24,true,151.0,0
+          12,2024-01-01,24,true,250.0,0
+          13,2024-01-01,24,true,251.0,0
+          14,2024-01-01,24,true,500.0,0
+          15,2024-01-01,24,true,501.0,0
+          16,2024-01-01,10,false,,0
+      - input: ref('ica_pm25_breakpoints')
+    expect:
+      format: csv
+      rows: |
+        station_code,exceeds_24h_limit,ica,ica_category
+        1,false,0,Buena
+        2,false,50,Buena
+        3,false,50,Buena
+        4,false,51,Aceptable
+        5,false,100,Aceptable
+        6,true,100,Aceptable
+        7,true,101,Dañina a la salud de grupos sensibles
+        8,true,150,Dañina a la salud de grupos sensibles
+        9,true,151,Dañina a la salud
+        10,true,200,Dañina a la salud
+        11,true,201,Muy dañina a la salud
+        12,true,300,Muy dañina a la salud
+        13,true,301,Peligrosa
+        14,true,500,Peligrosa
+        15,true,,
+        16,,,

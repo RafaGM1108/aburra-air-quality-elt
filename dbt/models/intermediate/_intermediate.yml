@@ -30,3 +30,25 @@ models:
         description: "`live` (geoportal) or `historical` (EntregaData1)."
         data_tests:
           - accepted_values: {arguments: {values: [live, historical]}}
+
+  - name: int_pm25_daily
+    description: Daily mean by station; NULL unless the day has var('min_valid_hours') valid hours.
+    data_tests:
+      - unique_combination:
+          arguments:
+            columns: [station_code, date_local]
+    columns:
+      - name: station_code
+        description: SIATA station code.
+        data_tests: [not_null]
+      - name: date_local
+        description: Calendar date in America/Bogota.
+        data_tests: [not_null]
+      - name: valid_hours
+        description: Hours with a valid reading.
+      - name: is_valid_day
+        description: True if valid_hours >= var('min_valid_hours').
+      - name: pm25_mean
+        description: Mean of the valid hours; NULL unless is_valid_day.
+      - name: pm25_max
+        description: Highest valid hour of the day.

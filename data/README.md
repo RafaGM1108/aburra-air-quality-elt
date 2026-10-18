@@ -36,6 +36,7 @@ Intermediate and mart models are Parquet files (dbt-duckdb `external`):
 
 - `02_intermediate/int_pm25_hourly.parquet`: live and historical hours on one timeline
   (live wins on overlap), with local date and hour.
+- `02_intermediate/int_pm25_daily.parquet`: daily mean by station and valid-hour count.
 - `05_model_input/fct_pm25_hourly.parquet`: hourly PM2.5 by station (local use only,
   never published).
 - `05_model_input/fct_pm25_daily.parquet`: daily mean by station; `NULL` unless the day
