@@ -34,6 +34,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- Open-Meteo weather extractor (#9): `make extract` also lands hourly temperature,
+  humidity, precipitation, wind and boundary-layer height for the valley in
+  `01_raw/open_meteo/` (the last three full days each run, and the 2023-07-31 → 2024-07-31
+  year once), with the SIATA client's retries and landing rules. Kept in its own Actions
+  cache entry; `make contract` checks both live APIs. Attribution (CC BY 4.0) in
+  `docs/data.md` and the README.
 - Deploy preparation (#28): `requirements.txt` exported from `uv.lock` (`make
   requirements`, checked in CI), `.streamlit/config.toml`, and `docs/deploy.md` with the
   Streamlit Community Cloud steps. The dashboard re-downloads marts older than 24 h from

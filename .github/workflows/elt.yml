@@ -38,6 +38,14 @@ jobs:
           key: raw-siata-${{ github.run_id }}
           restore-keys: raw-siata-
 
+      # A separate entry, so the SIATA entry's cache version (its path) never changes.
+      - name: Restore raw weather landings
+        uses: actions/cache/restore@v5
+        with:
+          path: data/01_raw/open_meteo
+          key: raw-open-meteo-${{ github.run_id }}
+          restore-keys: raw-open-meteo-
+
       # Failed stations make extract exit non-zero after landing the others: load what
       # was landed, keep it, then fail the run.
       - name: Extract
@@ -51,6 +59,13 @@ jobs:
         with:
           path: data/01_raw/siata
           key: raw-siata-${{ github.run_id }}
+
+      - name: Save raw weather landings
+        if: always()
+        uses: actions/cache/save@v5
+        with:
+          path: data/01_raw/open_meteo
+          key: raw-open-meteo-${{ github.run_id }}
 
       - name: Load and transform
         run: make load transform
@@ -88,6 +103,7 @@ jobs:
             echo "## Daily ELT"
             echo "- Run folders landed: $(find data/01_raw/siata/pm25 -mindepth 1 -maxdepth 1 -type d | wc -l)"
             echo "- Historical file landed: $(test -f data/01_raw/siata/historical/pm25.json && echo yes || echo no)"
+            echo "- Weather files landed: $(find data/01_raw/open_meteo -name '*.json' 2>/dev/null | wc -l)"
             echo "- Extract outcome: ${{ steps.extract.outcome }}"
           } >> "$GITHUB_STEP_SUMMARY"
 

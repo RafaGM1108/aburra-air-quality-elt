@@ -1,7 +1,8 @@
-name: SIATA contract
+name: API contract
 
-# The SIATA geoportal API is undocumented and can change without notice. Check weekly
-# that it still returns what the pipeline relies on, and open an issue when it does not.
+# The SIATA geoportal API is undocumented and can change without notice, and Open-Meteo
+# can rename variables. Check weekly that both still return what the pipeline relies on,
+# and open an issue when they do not.
 on:
   schedule:
     - cron: "0 13 * * 1"  # Mondays 08:00 America/Bogota
@@ -25,7 +26,7 @@ jobs:
       - name: Install dependencies
         run: uv sync --locked
 
-      - name: Check the live SIATA API
+      - name: Check the live SIATA and Open-Meteo APIs
         run: make contract
 
       - name: Open or update an issue on failure
@@ -34,7 +35,7 @@ jobs:
           GH_TOKEN: ${{ github.token }}
           RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
         run: |
-          title="SIATA API contract check failed"
+          title="API contract check failed"
           number=$(gh issue list --state open --search "in:title \"$title\"" --json number --jq '.[0].number')
           if [ -n "$number" ]; then
             gh issue comment "$number" --body "Failed again: $RUN_URL"

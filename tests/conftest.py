@@ -11,6 +11,7 @@ from aburra_air.data.historical import HISTORICAL_URL
 from aburra_air.utils.config import AnalysisConfig, Config, get_config
 
 SIATA_FIXTURES = Path(__file__).parent / "fixtures" / "siata"
+OPEN_METEO_FIXTURE = Path(__file__).parent / "fixtures" / "open_meteo" / "hourly.json"
 
 
 class RecordedSiata:
@@ -18,7 +19,8 @@ class RecordedSiata:
 
     ``overrides`` maps a station code to the response (or exception) to return instead;
     ``historical`` is the response for the frozen historical file (hand-made fixture
-    following the documented shape in ``docs/data.md``).
+    following the documented shape in ``docs/data.md``). Open-Meteo requests get a
+    hand-made response in Open-Meteo's documented shape.
     """
 
     def __init__(self) -> None:
@@ -30,6 +32,8 @@ class RecordedSiata:
 
     def __call__(self, request: httpx.Request) -> httpx.Response:
         self.requests.append(request)
+        if request.url.host.endswith("open-meteo.com"):
+            return httpx.Response(200, content=OPEN_METEO_FIXTURE.read_bytes())
         if request.url.path.endswith(siata.STATIONS_PATH):
             return httpx.Response(200, content=(SIATA_FIXTURES / "pm25_stations.json").read_bytes())
         if str(request.url) == HISTORICAL_URL:

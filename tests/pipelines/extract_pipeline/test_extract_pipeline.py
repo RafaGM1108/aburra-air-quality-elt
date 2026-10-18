@@ -14,3 +14,9 @@ def test_run_lands_into_configured_raw_folder(tmp_path: Path, siata_api: Recorde
 
     landed = sorted(p.name for p in (tmp_path / "siata" / "pm25" / "2026-10-10").iterdir())
     assert landed == ["12.json", "81.json", "stations.json"]
+    weather = sorted(
+        str(p.relative_to(tmp_path / "open_meteo"))
+        for p in tmp_path.rglob("*.json")
+        if "open_meteo" in p.parts
+    )
+    assert weather == ["historical/hourly.json", "hourly/2026-10-10.json"]

@@ -23,7 +23,7 @@ test:  ## Run the test suite
 coverage:  ## Run tests with a coverage report (terminal + htmlcov/)
 	uv run pytest --cov --cov-report=term --cov-report=html
 
-contract:  ## Check the live SIATA API still has the fields the pipeline relies on
+contract:  ## Check the live SIATA and Open-Meteo APIs still have the fields the pipeline relies on
 	uv run pytest -m live
 
 extract:  ## Run the extract pipeline (APIs -> 01_raw)
