@@ -1,6 +1,6 @@
 PACKAGE := aburra_air
 
-.PHONY: help install lint typecheck test coverage contract extract load transform elt app docs clean
+.PHONY: help install lint typecheck test coverage contract extract load transform dbt-docs elt app docs clean
 
 help:  ## Show this help
 	@grep -E '^[a-z]+:.*## ' $(MAKEFILE_LIST) | awk -F':.*## ' '{printf "  %-10s %s\n", $$1, $$2}'
@@ -34,6 +34,9 @@ load:  ## Run the load pipeline (01_raw -> DuckDB)
 
 transform:  ## Run the transform pipeline (dbt)
 	uv run python -m $(PACKAGE).pipelines.transform_pipeline
+
+dbt-docs:  ## Generate the dbt docs site (dbt/target/index.html)
+	uv run python -m $(PACKAGE).pipelines.transform_pipeline docs generate
 
 elt: extract load transform  ## Run the full ELT
 

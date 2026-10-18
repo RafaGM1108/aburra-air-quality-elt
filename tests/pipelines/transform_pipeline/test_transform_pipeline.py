@@ -66,6 +66,13 @@ def test_daily_mean_needs_18_valid_hours_and_gets_an_ica(config: Config) -> None
     assert rows[2] == ("2026-10-09", 21, 25.9, False, 76, "Aceptable")
 
 
+def test_docs_generate_writes_the_catalog(config: Config) -> None:
+    load_pipeline.run(config)
+    run(config)
+    run(config, "docs generate")
+    assert (config.paths.dbt_project / "target" / "catalog.json").exists()
+
+
 def test_failed_build_raises(config: Config) -> None:
     with pytest.raises(TransformError, match="dbt build failed"):
         run(config)  # raw tables were never loaded

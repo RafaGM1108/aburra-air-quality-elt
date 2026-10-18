@@ -15,6 +15,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- dbt tests and docs (#15): uniqueness of every model's key (generic
+  `unique_combination` test), `not_null`, relationships to `dim_stations`, accepted
+  values, and plausible ranges (generic `between` test: PM2.5 0–1000 µg/m³, ICA 0–500,
+  hours 0–23, coordinates inside the valley). `make dbt-docs` runs `dbt docs generate`.
 - dbt intermediate and marts as Parquet (#14): `int_pm25_hourly` (live + historical),
   `fct_pm25_hourly`, `fct_pm25_daily` (18 valid hours minimum, 24 h exceedance of
   37 µg/m³, ICA from a seed of the Res. 2254 breakpoints), `agg_pm25_station_monthly`

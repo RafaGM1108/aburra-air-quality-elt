@@ -1,0 +1,32 @@
+version: 2
+
+models:
+  - name: int_pm25_hourly
+    description: Live and historical hourly PM2.5 on one timeline; live wins on overlap.
+    data_tests:
+      - unique_combination:
+          arguments:
+            columns: [station_code, timestamp_hour]
+    columns:
+      - name: station_code
+        description: SIATA station code.
+        data_tests: [not_null]
+      - name: timestamp_hour
+        description: Hour of the reading (TIMESTAMPTZ, America/Bogota).
+        data_tests: [not_null]
+      - name: date_local
+        description: Calendar date in America/Bogota.
+        data_tests: [not_null]
+      - name: hour_local
+        description: Hour of day 0–23 in America/Bogota.
+        data_tests:
+          - not_null
+          - between: {arguments: {min_value: 0, max_value: 23}}
+      - name: pm25
+        description: PM2.5 in µg/m³ (NULL = missing or implausible).
+        data_tests:
+          - between: {arguments: {min_value: 0, max_value: 1000}}
+      - name: source
+        description: "`live` (geoportal) or `historical` (EntregaData1)."
+        data_tests:
+          - accepted_values: {arguments: {values: [live, historical]}}

@@ -11,3 +11,7 @@ seeds:
         ica_high: integer
         pm25_low: integer
         pm25_high: integer
+    data_tests:
+      - unique_combination:
+          arguments:
+            columns: [pm25_low]

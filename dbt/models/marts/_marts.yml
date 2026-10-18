@@ -1,0 +1,124 @@
+version: 2
+
+models:
+  - name: dim_stations
+    description: PM2.5 stations, including codes seen only in the historical data.
+    columns:
+      - name: station_code
+        description: SIATA station code.
+        data_tests: [unique, not_null]
+      - name: station_id
+        description: Short station id; NULL for stations no longer in the live list.
+      - name: station_name
+        description: Station name; NULL for stations no longer in the live list.
+      - name: municipality
+        description: Municipality; NULL for stations no longer in the live list.
+      - name: longitude
+        description: WGS84 longitude.
+      - name: latitude
+        description: WGS84 latitude.
+      - name: in_live_network
+        description: True if the station is in the latest live stations list.
+        data_tests: [not_null]
+
+  - name: fct_pm25_hourly
+    description: Hourly PM2.5 by station. Local use only; never published.
+    data_tests:
+      - unique_combination:
+          arguments:
+            columns: [station_code, timestamp_hour]
+    columns:
+      - name: station_code
+        description: SIATA station code.
+        data_tests:
+          - not_null
+          - relationships: {arguments: {to: ref('dim_stations'), field: station_code}}
+      - name: timestamp_hour
+        description: Hour of the reading (TIMESTAMPTZ).
+        data_tests: [not_null]
+      - name: date_local
+        description: Calendar date in America/Bogota.
+      - name: hour_local
+        description: Hour of day 0–23 in America/Bogota.
+      - name: pm25
+        description: PM2.5 in µg/m³.
+        data_tests:
+          - between: {arguments: {min_value: 0, max_value: 1000}}
+      - name: source
+        description: "`live` or `historical`."
+
+  - name: fct_pm25_daily
+    description: >
+      Daily PM2.5 by station and calendar day (America/Bogota), with the 24 h exceedance
+      flag and the ICA (Res. 2254 de 2017).
+    data_tests:
+      - unique_combination:
+          arguments:
+            columns: [station_code, date_local]
+    columns:
+      - name: station_code
+        description: SIATA station code.
+        data_tests:
+          - not_null
+          - relationships: {arguments: {to: ref('dim_stations'), field: station_code}}
+      - name: date_local
+        description: Calendar date in America/Bogota.
+        data_tests: [not_null]
+      - name: valid_hours
+        description: Hours with a valid reading.
+        data_tests:
+          - not_null
+          - between: {arguments: {min_value: 0, max_value: 24}}
+      - name: is_valid_day
+        description: True if valid_hours >= var('min_valid_hours') (18).
+        data_tests: [not_null]
+      - name: pm25_mean
+        description: Mean of the valid hours; NULL unless is_valid_day.
+        data_tests:
+          - between: {arguments: {min_value: 0, max_value: 1000}}
+      - name: pm25_max
+        description: Highest valid hour of the day.
+      - name: exceeds_24h_limit
+        description: pm25_mean > 37 µg/m³; NULL unless is_valid_day.
+      - name: ica
+        description: ICA (0–500) from the truncated pm25_mean; NULL above 500 µg/m³ or unless is_valid_day.
+        data_tests:
+          - between: {arguments: {min_value: 0, max_value: 500}}
+      - name: ica_category
+        description: ICA category (Spanish names from the resolution).
+        data_tests:
+          - accepted_values:
+              arguments:
+                values:
+                  - Buena
+                  - Aceptable
+                  - Dañina a la salud de grupos sensibles
+                  - Dañina a la salud
+                  - Muy dañina a la salud
+                  - Peligrosa
+      - name: ica_color
+        description: Color of the ICA category.
+
+  - name: agg_pm25_station_monthly
+    description: Monthly summary by station. Aggregated, so it can be published.
+    data_tests:
+      - unique_combination:
+          arguments:
+            columns: [station_code, month]
+    columns:
+      - name: station_code
+        description: SIATA station code.
+        data_tests: [not_null]
+      - name: month
+        description: First day of the month.
+        data_tests: [not_null]
+      - name: valid_days
+        description: Days with a valid daily mean.
+        data_tests:
+          - between: {arguments: {min_value: 0, max_value: 31}}
+      - name: pm25_mean
+        description: Mean of the valid daily means.
+      - name: exceedance_days
+        description: Valid days above the 24 h limit.
+        data_tests:
+          - between: {arguments: {min_value: 0, max_value: 31}}
