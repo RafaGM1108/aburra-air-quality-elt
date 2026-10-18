@@ -122,3 +122,31 @@ models:
         description: Valid days above the 24 h limit.
         data_tests:
           - between: {arguments: {min_value: 0, max_value: 31}}
+
+  - name: agg_pm25_hour_of_day
+    description: >
+      Hour-of-day PM2.5 profile by station, month and weekday/weekend (sum and count of
+      valid hours). Aggregated, so it can be published.
+    data_tests:
+      - unique_combination:
+          arguments:
+            columns: [station_code, month, hour_of_day, is_weekend]
+    columns:
+      - name: station_code
+        description: SIATA station code.
+        data_tests: [not_null]
+      - name: month
+        description: First day of the month (America/Bogota).
+        data_tests: [not_null]
+      - name: hour_of_day
+        description: Hour of day 0–23 (America/Bogota).
+        data_tests:
+          - between: {arguments: {min_value: 0, max_value: 23}}
+      - name: is_weekend
+        description: Saturday or Sunday.
+      - name: valid_hours
+        description: Valid hourly readings in the group.
+      - name: pm25_sum
+        description: Sum of the valid readings (µg/m³).
+      - name: pm25_mean
+        description: Mean of the valid readings (µg/m³); NULL if none.

@@ -19,6 +19,7 @@ def test_build_writes_marts_to_parquet(config: Config) -> None:
     run(config)
     marts = sorted(p.name for p in config.paths.model_input.iterdir())
     assert marts == [
+        "agg_pm25_hour_of_day.parquet",
         "agg_pm25_station_monthly.parquet",
         "dim_stations.parquet",
         "fct_pm25_daily.parquet",

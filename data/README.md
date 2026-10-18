@@ -45,6 +45,8 @@ Intermediate and mart models are Parquet files (dbt-duckdb `external`):
   lookup, Res. 2254 Art. 20–21).
 - `05_model_input/agg_pm25_station_monthly.parquet`: valid days, mean and exceedance days
   by station and month.
+- `05_model_input/agg_pm25_hour_of_day.parquet`: sum and count of valid hours by
+  station, month, hour of day and weekday/weekend (a profile, publishable).
 - `05_model_input/dim_stations.parquet`: stations, including codes seen only in the
   historical data.
 

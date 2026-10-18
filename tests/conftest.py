@@ -84,7 +84,8 @@ def marts(tmp_path: Path) -> Path:
     """Daily and station marts for 3 stations over 2024-01-01..10.
 
     Station 1: 10 valid days, 4 above 37. Station 2: 10 valid days, 1 above 37.
-    Station 3: 5 valid days (50% coverage), all above 37.
+    Station 3: 5 valid days (50% coverage), all above 37. 2024-01-01..10 has 8 weekdays and
+    2 weekend days.
     """
     folder = tmp_path / "model_input"
     folder.mkdir()
@@ -110,5 +111,15 @@ def marts(tmp_path: Path) -> Path:
                 (2, 'BBB', 'Beta', 'Bello'), (3, 'CCC', 'Gamma', 'Itagüí'))
                 t(station_code, station_id, station_name, municipality))
             TO '{folder / "dim_stations.parquet"}' (FORMAT parquet)
+        """)
+        # Hour-of-day profile for January 2024: station 1 reports every hour, 30 µg/m³ on
+        # weekdays and 20 µg/m³ on weekends, plus 10 µg/m³ extra at 07:00 on weekdays.
+        con.execute(f"""
+            COPY (
+                SELECT 1 AS station_code, DATE '2024-01-01' AS month, h AS hour_of_day,
+                    w AS is_weekend, n AS valid_hours, n * v AS pm25_sum, v AS pm25_mean
+                FROM range(24) t(h), (VALUES (false, 8), (true, 2)) d(w, n),
+                    LATERAL (SELECT CASE WHEN w THEN 20.0 WHEN h = 7 THEN 40.0 ELSE 30.0 END AS v)
+            ) TO '{folder / "agg_pm25_hour_of_day.parquet"}' (FORMAT parquet)
         """)
     return folder
