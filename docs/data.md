@@ -54,17 +54,26 @@ SIATA grants access to its download portal on request by email, stating the purp
 portal then asks for a user account and a form per download. That is the only route
 found for PM10/O3/NO2 after 2024 and for history before 2023-07.
 
+**Not pursued** (2026-10-18, #4): access will not be granted for this project, so the
+scope is fixed to live PM2.5 from the geoportal plus the frozen 2023-07 → 2024-07
+`EntregaData1` history. No PM10/O3/NO2 after 2024 and no history before 2023-07.
+
 ### Terms of use
 
 No license or terms of use were found on siata.gov.co or the geoportal, and neither host
 has a `robots.txt`. The data is public government data and SIATA presents the geoportal
-as free for everyone, but redistribution terms are **unconfirmed**. Until SIATA confirms:
+as free for everyone, but redistribution terms are **unconfirmed**, and will stay so:
+SIATA will not be asked (#4). These rules are therefore permanent:
 
 - call each endpoint once per station per day, with an identifying `User-Agent`;
-- credit SIATA as the source in the README and the dashboard;
-- commit code and small samples only; publishing the full DuckDB/Parquet as a release
-  asset (Phase 4) waits for SIATA's answer. Ask in the same email as the data access
-  request.
+- credit SIATA as the source in the README, the release notes and the dashboard;
+- commit code and small samples only;
+- the pipeline itself is unchanged: raw JSON lands in `01_raw`, is loaded into DuckDB and
+  cleaned in dbt staging/intermediate as planned. The restriction is only on what leaves
+  the pipeline publicly;
+- publish **aggregates only** (Phase 4): daily or coarser marts per station
+  (daily means, exceedances, ICA categories) and pattern summaries (e.g. mean by hour of
+  day). Never publish the raw JSON, the DuckDB file or any hourly series.
 
 ## Open-Meteo (optional weather covariates)
 
