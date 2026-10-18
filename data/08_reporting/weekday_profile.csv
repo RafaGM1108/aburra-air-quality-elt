@@ -1,0 +1,8 @@
+iso_weekday,weekday,valid_days,station_days,coverage,pm25_mean
+1,Monday,847,1092,0.776,19.1
+2,Tuesday,864,1113,0.776,19.8
+3,Wednesday,843,1113,0.757,21.6
+4,Thursday,850,1092,0.778,22.0
+5,Friday,852,1092,0.78,22.0
+6,Saturday,851,1092,0.779,19.0
+7,Sunday,849,1092,0.777,16.6

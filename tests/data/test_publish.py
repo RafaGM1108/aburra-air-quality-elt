@@ -1,9 +1,18 @@
+import hashlib
+import json
 from pathlib import Path
 
 import duckdb
+import httpx
 import pytest
 
-from aburra_air.data.publish import PUBLISHABLE, PublishError, stage_publication
+from aburra_air.data.publish import (
+    PUBLISHABLE,
+    RELEASE_API,
+    PublishError,
+    fetch_reporting,
+    stage_publication,
+)
 
 
 def write_parquet(path: Path, select: str) -> None:
@@ -40,3 +49,38 @@ def test_refuses_when_a_mart_is_missing(model_input: Path, tmp_path: Path) -> No
     (model_input / "dim_stations.parquet").unlink()
     with pytest.raises(PublishError, match="missing"):
         stage_publication(model_input, tmp_path / "publish")
+
+
+def test_fetch_reporting_downloads_outputs_and_records_provenance(tmp_path: Path) -> None:
+    release = {
+        "html_url": "https://github.com/x/y/releases/tag/data-latest",
+        "published_at": "2026-10-18T19:00:00Z",
+        "assets": [
+            {
+                "name": "station_ranking.csv",
+                "updated_at": "2026-10-18T19:22:50Z",
+                "browser_download_url": "https://dl/station_ranking.csv",
+            },
+            {"name": "fct_pm25_daily.parquet", "browser_download_url": "https://dl/daily.parquet"},
+        ],
+    }
+
+    def handler(request: httpx.Request) -> httpx.Response:
+        if request.url == httpx.URL(RELEASE_API):
+            return httpx.Response(200, json=release)
+        assert request.url.path == "/station_ranking.csv"  # Parquet marts are not fetched
+        return httpx.Response(200, content=b"rank\n1\n")
+
+    with httpx.Client(transport=httpx.MockTransport(handler)) as client:
+        written = fetch_reporting(client, tmp_path)
+
+    assert [p.name for p in written] == ["station_ranking.csv", "provenance.json"]
+    provenance = json.loads((tmp_path / "provenance.json").read_text())
+    assert provenance["published_at"] == "2026-10-18T19:00:00Z"
+    assert provenance["files"] == [
+        {
+            "name": "station_ranking.csv",
+            "updated_at": "2026-10-18T19:22:50Z",
+            "sha256": hashlib.sha256(b"rank\n1\n").hexdigest(),
+        }
+    ]
