@@ -15,6 +15,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- `Daily ELT` workflow (#17): runs `make extract load transform` every day at 20:17
+  America/Bogota and on demand, keeps the raw landings between runs in the Actions cache
+  (never published), and opens or updates a `type:bug` issue when a run fails.
 - CI runs `make load transform dbt-docs` on the recorded fixtures inside the required
   `test` check, offline, so a broken dbt model or test fails the PR (#16).
 - dbt tests and docs (#15): uniqueness of every model's key (generic

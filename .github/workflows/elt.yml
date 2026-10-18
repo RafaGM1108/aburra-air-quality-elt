@@ -1,0 +1,85 @@
+name: Daily ELT
+
+# SIATA only serves the last 72 h, so the job must run every day to build a history.
+# Raw landings are kept between runs in the Actions cache (private to the workflows,
+# never published, per docs/data.md); the DuckDB file and marts are rebuilt from them.
+on:
+  schedule:
+    - cron: "17 1 * * *"  # 20:17 America/Bogota; the 72 h series lags ~7 h behind
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  issues: write
+
+concurrency:
+  group: daily-elt
+  cancel-in-progress: false
+
+jobs:
+  elt:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: astral-sh/setup-uv@v10.2.0
+        with:
+          python-version: "3.12"
+          enable-cache: true
+
+      - name: Install dependencies
+        run: uv sync --locked
+
+      - name: Restore raw landings
+        uses: actions/cache/restore@v5
+        with:
+          path: data/01_raw/siata
+          key: raw-siata-${{ github.run_id }}
+          restore-keys: raw-siata-
+
+      # Failed stations make extract exit non-zero after landing the others: load what
+      # was landed, keep it, then fail the run.
+      - name: Extract
+        id: extract
+        continue-on-error: true
+        run: make extract
+
+      - name: Save raw landings
+        if: always()
+        uses: actions/cache/save@v5
+        with:
+          path: data/01_raw/siata
+          key: raw-siata-${{ github.run_id }}
+
+      - name: Load and transform
+        run: make load transform
+
+      - name: Summary
+        if: always()
+        run: |
+          {
+            echo "## Daily ELT"
+            echo "- Run folders landed: $(find data/01_raw/siata/pm25 -mindepth 1 -maxdepth 1 -type d | wc -l)"
+            echo "- Historical file landed: $(test -f data/01_raw/siata/historical/pm25.json && echo yes || echo no)"
+            echo "- Extract outcome: ${{ steps.extract.outcome }}"
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Fail if extract failed
+        if: steps.extract.outcome == 'failure'
+        run: exit 1
+
+      - name: Open or update an issue on failure
+        if: failure()
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        run: |
+          title="Daily ELT failed"
+          number=$(gh issue list --state open --search "in:title \"$title\"" --json number --jq '.[0].number')
+          if [ -n "$number" ]; then
+            gh issue comment "$number" --body "Failed again: $RUN_URL"
+          else
+            gh issue create --title "$title" --label type:bug \
+              --body "The daily ELT run failed: $RUN_URL. Raw landings up to the failure are kept in the Actions cache."
+          fi
