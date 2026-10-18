@@ -3,10 +3,12 @@
 [![CI](https://github.com/RafaGM1108/aburra-air-quality-elt/actions/workflows/ci.yml/badge.svg)](https://github.com/RafaGM1108/aburra-air-quality-elt/actions/workflows/ci.yml)
 [![codecov](https://codecov.io/gh/RafaGM1108/aburra-air-quality-elt/graph/badge.svg)](https://codecov.io/gh/RafaGM1108/aburra-air-quality-elt)
 [![Python 3.12](https://img.shields.io/badge/python-3.12-blue.svg)](https://www.python.org/)
+[![Streamlit App](https://static.streamlit.io/badges/streamlit_badge_black_white.svg)](https://aburra-air-quality-elt-2zkrjackvqbdcujyphpcc4.streamlit.app/)
 [![License: MIT](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
 
 > A daily, tested ELT pipeline that turns SIATA air quality measurements for Medellín and
-> the Aburrá Valley into clean hourly and daily tables and a public dashboard.
+> the Aburrá Valley into clean hourly and daily tables and a
+> [public dashboard](https://aburra-air-quality-elt-2zkrjackvqbdcujyphpcc4.streamlit.app/).
 
 ## Overview
 
@@ -100,7 +102,9 @@ caveats are in [`docs/findings.md`](docs/findings.md).
 
 ![Dashboard: daily means, monthly exceedances and hour-of-day profile of CEN-TRAF](docs/images/dashboard.png)
 
-Run it with `make app`. It downloads the published marts from the `data-latest` release
+**Live:** [aburra-air-quality-elt-2zkrjackvqbdcujyphpcc4.streamlit.app](https://aburra-air-quality-elt-2zkrjackvqbdcujyphpcc4.streamlit.app/).
+
+Run it locally with `make app`. It downloads the published marts from the `data-latest` release
 on first start, so it needs no pipeline run.
 
 ## Project structure
@@ -153,7 +157,7 @@ make lint typecheck test     # check everything works
 | 3 | Phase 3 - dbt models | ✅ |
 | 4 | Phase 4 - Orchestration | ✅ |
 | 5 | Phase 5 - Analysis | ✅ |
-| 6 | Phase 6 - Dashboard | ✅ (public deploy pending) |
+| 6 | Phase 6 - Dashboard | ✅ |
 | 7 | Phase 7 - Docs and v1.0.0 | 🚧 |
 
 Work is tracked on the [Kanban board](https://github.com/users/RafaGM1108/projects/12): one
