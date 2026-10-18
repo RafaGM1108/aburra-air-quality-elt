@@ -20,6 +20,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- Next-day PM2.5 baselines (#27): `make analyze` writes
+  `data/08_reporting/forecast_baselines.csv` with MAE, RMSE, bias and skill versus
+  persistence of persistence, 7-day mean and same-weekday-last-week forecasts of the
+  daily mean, all backtested on the same station-days of the analysis window.
 - Dashboard smoke tests (#26) with Streamlit `AppTest` on the fixture marts, in the
   required `test` job: the app loads, every station × period renders without an
   exception, and an empty period shows a message.
