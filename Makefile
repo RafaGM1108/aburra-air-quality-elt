@@ -1,6 +1,6 @@
 PACKAGE := aburra_air
 
-.PHONY: help install lint typecheck test coverage contract extract load transform quality analyze publish fetch-reporting dbt-docs elt app docs clean
+.PHONY: help install lint typecheck test coverage contract extract load transform quality analyze publish fetch-reporting dbt-docs elt requirements app docs clean
 
 help:  ## Show this help
 	@grep -E '^[a-z]+:.*## ' $(MAKEFILE_LIST) | awk -F':.*## ' '{printf "  %-10s %s\n", $$1, $$2}'
@@ -51,6 +51,9 @@ dbt-docs:  ## Generate the dbt docs site (dbt/target/index.html)
 	uv run python -m $(PACKAGE).pipelines.transform_pipeline docs generate
 
 elt: extract load transform quality analyze  ## Run the full ELT and the analyses
+
+requirements:  ## Export requirements.txt for Streamlit Community Cloud from uv.lock
+	uv export --locked --no-default-groups --group app --no-hashes --format requirements-txt -o requirements.txt
 
 app:  ## Launch the Streamlit app
 	uv run streamlit run src/$(PACKAGE)/app/main.py

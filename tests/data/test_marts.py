@@ -1,3 +1,5 @@
+import os
+import time
 from datetime import date
 from pathlib import Path
 
@@ -19,6 +21,25 @@ def test_ensure_marts_downloads_only_missing_ones(marts: Path) -> None:
     assert requested == ["dim_stations.parquet"]
     assert (marts / "dim_stations.parquet").read_bytes() == b"PAR1"
     assert not list(marts.glob("*.part"))
+
+
+def test_ensure_marts_refreshes_stale_ones_and_keeps_them_if_offline(marts: Path) -> None:
+    stale = marts / "dim_stations.parquet"
+    os.utime(stale, (time.time() - 2 * 86400,) * 2)
+
+    def offline(request: httpx.Request) -> httpx.Response:
+        raise httpx.ConnectError("offline", request=request)
+
+    with httpx.Client(transport=httpx.MockTransport(offline)) as client:
+        views.ensure_marts(marts, client, max_age_hours=24)
+    assert stale.read_bytes().startswith(b"PAR1")  # still the original Parquet
+
+    with httpx.Client(
+        transport=httpx.MockTransport(lambda r: httpx.Response(200, content=b"new"))
+    ) as client:
+        views.ensure_marts(marts, client, max_age_hours=24)
+    assert stale.read_bytes() == b"new"
+    assert (marts / "fct_pm25_daily.parquet").read_bytes() != b"new"  # fresh, not refetched
 
 
 def test_latest_ica_has_located_stations_only(marts: Path) -> None:

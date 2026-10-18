@@ -20,6 +20,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- Deploy preparation (#28): `requirements.txt` exported from `uv.lock` (`make
+  requirements`, checked in CI), `.streamlit/config.toml`, and `docs/deploy.md` with the
+  Streamlit Community Cloud steps. The dashboard re-downloads marts older than 24 h from
+  the data release and keeps its copy if that fails.
 - Streamlit + plotly dashboard (#25), `make app`: map of the latest valid day's ICA by
   station, daily means with the 37 µg/m³ line, monthly exceedance days and the
   hour-of-day profile, with a period switch (historical year / live / all). It reads only
