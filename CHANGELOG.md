@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- Station id, name and municipality are trimmed in staging; SIATA writes `"Medellín "` (#52).
+
 ### Changed
 
 - SIATA will not grant data access or confirm redistribution terms (#4): scope fixed to

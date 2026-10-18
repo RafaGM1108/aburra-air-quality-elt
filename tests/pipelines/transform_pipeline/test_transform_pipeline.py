@@ -50,6 +50,14 @@ def test_docs_generate_writes_the_catalog(config: Config) -> None:
     assert (config.paths.dbt_project / "target" / "catalog.json").exists()
 
 
+def test_station_text_is_trimmed(config: Config) -> None:
+    load_pipeline.run(config)
+    run(config)
+    with duckdb.connect(config.paths.database) as con:
+        sql = "SELECT municipality FROM staging.stg_siata__stations ORDER BY 1"
+        assert con.sql(sql).fetchall() == [("Barbosa",), ("Medellín",)]  # raw is "Medellín "
+
+
 def test_failed_build_raises(config: Config) -> None:
     with pytest.raises(TransformError, match="dbt build failed"):
         run(config)  # raw tables were never loaded
