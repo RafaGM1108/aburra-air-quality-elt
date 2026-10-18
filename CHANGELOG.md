@@ -20,6 +20,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- Deploy preparation (#28): `requirements.txt` exported from `uv.lock` (`make
+  requirements`, checked in CI), `.streamlit/config.toml`, and `docs/deploy.md` with the
+  Streamlit Community Cloud steps. The dashboard re-downloads marts older than 24 h from
+  the data release and keeps its copy if that fails.
 - Next-day PM2.5 baselines (#27): `make analyze` writes
   `data/08_reporting/forecast_baselines.csv` with MAE, RMSE, bias and skill versus
   persistence of persistence, 7-day mean and same-weekday-last-week forecasts of the
