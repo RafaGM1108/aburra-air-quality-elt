@@ -16,9 +16,9 @@ Kickoff: Monday 2026-10-12, 08:00 (America/Bogota).
 - **Phase 1:** incremental, idempotent extractor with retries, logging and tests.
 - **Phase 2:** load into DuckDB with deduplication; backfill historical data.
 - **Phase 3:** dbt models (staging, intermediate, marts: hourly/daily by station, exceedances), dbt tests, dbt docs.
-- **Phase 4:** daily orchestration with GitHub Actions; publish the latest DuckDB/Parquet as a release asset; data-quality checks that fail the run loudly.
+- **Phase 4:** daily orchestration with GitHub Actions; publish the latest aggregated marts (Parquet, no hourly series) as a release asset; data-quality checks that fail the run loudly.
 - **Phase 5:** analysis: air quality index categories under the Colombian standard (Resolución 2254 de 2017 — verify thresholds from the official source), worst stations, hourly/weekly/seasonal patterns, critical episodes.
-- **Phase 6:** Streamlit dashboard reading the published data; optional simple next-24h PM2.5 forecast.
+- **Phase 6:** Streamlit dashboard reading the published aggregates; optional simple next-24h PM2.5 forecast.
 - **Phase 7:** README with architecture diagram (Mermaid), real findings, screenshots; release v1.0.0.
 
 **Topics:** data-engineering, elt, dbt, duckdb, github-actions, air-quality, medellin, colombia, python, streamlit
@@ -27,6 +27,7 @@ Kickoff: Monday 2026-10-12, 08:00 (America/Bogota).
 
 - [x] SIATA: current access method (API / downloads), update frequency, terms of use.
   Done 2026-10-10, see `docs/data.md`. Live = geoportal API, PM2.5 only; old JSON frozen
-  since 2024-08; terms unconfirmed (email SIATA).
+  since 2024-08; terms unconfirmed. SIATA will not grant access (2026-10-18, #4):
+  publish aggregates only.
 - [x] Resolución 2254 de 2017: official thresholds and AQI breakpoints. Done 2026-10-10
   from the MinAmbiente PDF, see `docs/data.md`.
