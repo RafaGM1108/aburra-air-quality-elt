@@ -1,6 +1,6 @@
 PACKAGE := aburra_air
 
-.PHONY: help install lint typecheck test coverage contract extract load transform quality publish dbt-docs elt app docs clean
+.PHONY: help install lint typecheck test coverage contract extract load transform quality analyze publish dbt-docs elt app docs clean
 
 help:  ## Show this help
 	@grep -E '^[a-z]+:.*## ' $(MAKEFILE_LIST) | awk -F':.*## ' '{printf "  %-10s %s\n", $$1, $$2}'
@@ -38,13 +38,16 @@ transform:  ## Run the transform pipeline (dbt)
 quality:  ## Fail if the loaded data is stale, incomplete or duplicated
 	uv run python -m $(PACKAGE).pipelines.quality_pipeline
 
+analyze:  ## Run the analyses on the marts (tables and figures to data/08_reporting)
+	uv run python -m $(PACKAGE).pipelines.analysis_pipeline
+
 publish:  ## Stage the aggregated marts for the data release (build/publish)
 	uv run python -m $(PACKAGE).pipelines.publish_pipeline
 
 dbt-docs:  ## Generate the dbt docs site (dbt/target/index.html)
 	uv run python -m $(PACKAGE).pipelines.transform_pipeline docs generate
 
-elt: extract load transform quality  ## Run the full ELT
+elt: extract load transform quality analyze  ## Run the full ELT and the analyses
 
 app:  ## Launch the Streamlit app
 	uv run streamlit run src/$(PACKAGE)/app/main.py

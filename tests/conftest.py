@@ -1,12 +1,14 @@
 import shutil
+from datetime import date
 from pathlib import Path
 
+import duckdb
 import httpx
 import pytest
 
 from aburra_air.data import siata
 from aburra_air.data.historical import HISTORICAL_URL
-from aburra_air.utils.config import Config, get_config
+from aburra_air.utils.config import AnalysisConfig, Config, get_config
 
 SIATA_FIXTURES = Path(__file__).parent / "fixtures" / "siata"
 
@@ -72,3 +74,41 @@ def config(tmp_path: Path) -> Config:
         }
     )
     return config.model_copy(update={"paths": paths})
+
+
+ANALYSIS = AnalysisConfig(start=date(2024, 1, 1), end=date(2024, 1, 10), min_coverage=0.75)
+
+
+@pytest.fixture
+def marts(tmp_path: Path) -> Path:
+    """Daily and station marts for 3 stations over 2024-01-01..10.
+
+    Station 1: 10 valid days, 4 above 37. Station 2: 10 valid days, 1 above 37.
+    Station 3: 5 valid days (50% coverage), all above 37.
+    """
+    folder = tmp_path / "model_input"
+    folder.mkdir()
+    with duckdb.connect() as con:
+        con.execute(f"""
+            COPY (
+                SELECT station_code, DATE '2024-01-01' + i::INTEGER AS date_local,
+                    valid AS is_valid_day,
+                    CASE WHEN valid THEN pm25 END AS pm25_mean,
+                    CASE WHEN valid THEN pm25 > 37 END AS exceeds_24h_limit
+                FROM (
+                    SELECT 1 AS station_code, i, true AS valid,
+                        CASE WHEN i < 4 THEN 50.0 ELSE 20.0 END AS pm25 FROM range(10) t(i)
+                    UNION ALL
+                    SELECT 2, i, true, CASE WHEN i = 0 THEN 40.0 ELSE 30.0 END FROM range(10) t(i)
+                    UNION ALL
+                    SELECT 3, i, i < 5, 60.0 FROM range(10) t(i)
+                )
+            ) TO '{folder / "fct_pm25_daily.parquet"}' (FORMAT parquet)
+        """)
+        con.execute(f"""
+            COPY (SELECT * FROM (VALUES (1, 'AAA', 'Alpha', 'Medellín'),
+                (2, 'BBB', 'Beta', 'Bello'), (3, 'CCC', 'Gamma', 'Itagüí'))
+                t(station_code, station_id, station_name, municipality))
+            TO '{folder / "dim_stations.parquet"}' (FORMAT parquet)
+        """)
+    return folder

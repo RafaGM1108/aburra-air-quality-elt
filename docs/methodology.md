@@ -27,9 +27,11 @@ series lags about 7 h behind real time) and on demand (`workflow_dispatch`):
 4. `make load transform`: rebuild DuckDB and the marts from all landings;
 5. `make quality`: freshness, row count, station coverage and duplicate-key checks with
    the thresholds in `conf/base.yaml`;
-6. `make publish` + `gh release upload`: refresh the `data-latest` release with the
-   aggregated marts only (daily and monthly by station, stations), credited to SIATA;
-7. fail the run, and open or update a `Daily ELT failed` issue, if any step failed.
+6. `make analyze`: tables and figures in `data/08_reporting/`;
+7. `make publish` + `gh release upload`: refresh the `data-latest` release with the
+   aggregated marts only (daily and monthly by station, stations) and the analysis
+   outputs, credited to SIATA;
+8. fail the run, and open or update a `Daily ELT failed` issue, if any step failed.
 
 The raw history lives only in the Actions cache: it is private to the repository's
 workflows and never published (see the terms in `docs/data.md`). GitHub evicts cache
