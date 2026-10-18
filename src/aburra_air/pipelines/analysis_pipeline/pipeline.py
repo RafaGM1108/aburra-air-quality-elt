@@ -2,6 +2,7 @@
 
 from pathlib import Path
 
+from aburra_air.analysis.episodes import episodes
 from aburra_air.analysis.patterns import patterns
 from aburra_air.analysis.ranking import station_ranking
 from aburra_air.utils.config import Config, get_config
@@ -23,4 +24,5 @@ def run(config: Config | None = None) -> list[Path]:
     return [
         *station_ranking(paths.model_input, paths.reporting, config.analysis),
         *patterns(paths.model_input, paths.reporting, config.analysis),
+        *episodes(paths.model_input, paths.reporting, config.analysis),
     ]

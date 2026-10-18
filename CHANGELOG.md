@@ -15,6 +15,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- Critical episodes (#23): `make analyze` writes `data/08_reporting/episodes.csv` with
+  prevención/alerta/emergencia episodes per station from 24 h moving averages and the
+  Art. 11/13 48 h / 75% rule; tested on synthetic series (start, end, short spikes, dips,
+  escalation, missing hours, open episodes). Skipped where the hourly mart is absent.
 - Patterns (#22): new publishable mart `agg_pm25_hour_of_day`, and `make analyze` writes
   `diurnal_profile`, `weekday_profile` and `monthly_profile` (CSV + PNG) to
   `data/08_reporting`, each with valid/possible counts and the pooled coverage printed

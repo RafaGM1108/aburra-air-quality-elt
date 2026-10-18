@@ -53,6 +53,26 @@ the historical backfill can be fetched again.
 - The dbt unit test `ica_at_every_breakpoint_edge` (`dbt/models/marts/_ica_unit_tests.yml`)
   checks every edge of Table 6 against the real breakpoint seed.
 
+## Critical episodes (Art. 10, 11 and 13)
+
+`aburra_air.analysis.episodes` applies the PM2.5 levels of Table 4 (prevención 38–55,
+alerta 56–150, emergencia ≥ 151 µg/m³) to each station's 24 h moving average:
+
+- the moving average at hour *t* uses hours *t*−23…*t* and needs ≥ 18 valid hours
+  (project choice, same 75% as the daily mean); values are truncated like the ICA;
+- **start** (Art. 11): the first hour in a level, if more than 75% of the next 48 moving
+  averages are at that level or above; a higher level is declared the same way during the
+  episode, and the episode keeps the highest;
+- **end** (Art. 13): the first hour below the lower limit of the starting level, if more
+  than 75% of the next 48 moving averages are also below it;
+- missing moving averages count against both; hours without 48 hours of future data can
+  neither start nor end an episode, so an episode can stay open at the end of the data;
+- per station only. The municipal declaration (≥ 50% of a municipality's stations,
+  Art. 12) is not computed.
+
+The rule needs hourly data, so it runs in the Daily ELT; `episodes.csv` (one row per
+episode, no hourly series) is published with the other analysis outputs.
+
 ## Analyses
 
 There are no notebooks. Exploratory and statistical analyses are scripts in `src/` run with
