@@ -12,6 +12,8 @@ paths:
   primary: data/03_primary
   model_input: data/05_model_input
   reporting: data/08_reporting
+  # DuckDB file: raw tables from the load step plus the dbt models.
+  database: data/03_primary/aburra_air.duckdb
 
 logging:
   level: INFO

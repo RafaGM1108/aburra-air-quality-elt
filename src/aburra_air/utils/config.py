@@ -31,6 +31,7 @@ class PathsConfig(BaseModel):
     primary: Path
     model_input: Path
     reporting: Path
+    database: Path
 
 
 class LoggingConfig(BaseModel):
