@@ -73,6 +73,15 @@ alerta 56–150, emergencia ≥ 151 µg/m³) to each station's 24 h moving avera
 The rule needs hourly data, so it runs in the Daily ELT; `episodes.csv` (one row per
 episode, no hourly series) is published with the other analysis outputs.
 
+## Next-day forecast baselines
+
+`aburra_air.analysis.forecast` backtests three naive forecasts of the next calendar day's
+mean (the quantity the 24 h limit and the ICA use) on every valid station-day of the
+analysis window: **persistence** (tomorrow = today), **7-day mean** (≥ 5 valid days) and
+**seasonal naive** (same weekday last week). All three are scored on the same
+station-days; `skill_vs_persistence` = 1 − MAE / MAE(persistence). No model is fitted, so
+there is no train/test split to leak.
+
 ## Analyses
 
 There are no notebooks. Exploratory and statistical analyses are scripts in `src/` run with

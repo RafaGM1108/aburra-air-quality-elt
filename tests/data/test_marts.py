@@ -4,6 +4,7 @@ from datetime import date
 from pathlib import Path
 
 import httpx
+import pytest
 
 from aburra_air.data import marts as views
 
@@ -40,6 +41,15 @@ def test_ensure_marts_refreshes_stale_ones_and_keeps_them_if_offline(marts: Path
         views.ensure_marts(marts, client, max_age_hours=24)
     assert stale.read_bytes() == b"new"
     assert (marts / "fct_pm25_daily.parquet").read_bytes() != b"new"  # fresh, not refetched
+
+
+def test_ensure_marts_fails_when_a_missing_mart_cannot_be_fetched(marts: Path) -> None:
+    (marts / "dim_stations.parquet").unlink()
+    with (
+        httpx.Client(transport=httpx.MockTransport(lambda r: httpx.Response(404))) as client,
+        pytest.raises(httpx.HTTPStatusError),
+    ):
+        views.ensure_marts(marts, client, max_age_hours=24)
 
 
 def test_latest_ica_has_located_stations_only(marts: Path) -> None:
