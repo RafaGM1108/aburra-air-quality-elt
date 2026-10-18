@@ -33,6 +33,17 @@ jobs:
       - name: Tests with coverage
         run: uv run pytest --cov --cov-report=xml --cov-report=term
 
+      # Part of the required `test` check: a broken model or dbt test fails the PR.
+      # Runs offline on the recorded fixtures, landed as `make extract` would.
+      - name: dbt build on the fixtures
+        run: |
+          day=data/01_raw/siata/pm25/2026-10-10
+          mkdir -p "$day" data/01_raw/siata/historical
+          cp tests/fixtures/siata/pm25_stations.json "$day/stations.json"
+          for code in 12 81; do cp "tests/fixtures/siata/pm25_72h_$code.json" "$day/$code.json"; done
+          cp tests/fixtures/siata/historical_pm25.json data/01_raw/siata/historical/pm25.json
+          make load transform dbt-docs
+
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v7
         with:
