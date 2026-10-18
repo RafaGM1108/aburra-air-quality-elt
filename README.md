@@ -160,7 +160,7 @@ make lint typecheck test     # check everything works
 | 4 | Phase 4 - Orchestration | ✅ |
 | 5 | Phase 5 - Analysis | ✅ |
 | 6 | Phase 6 - Dashboard | ✅ |
-| 7 | Phase 7 - Docs and v1.0.0 | 🚧 |
+| 7 | Phase 7 - Docs and v1.0.0 | ✅ |
 
 Work is tracked on the [Kanban board](https://github.com/users/RafaGM1108/projects/12): one
 milestone per phase, small issues, and a PR per issue.

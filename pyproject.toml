@@ -1,6 +1,6 @@
 [project]
 name = "aburra-air-quality-elt"
-version = "0.1.0"
+version = "1.0.0"
 description = "ELT pipeline and dashboard for air quality in the Aburrá Valley (Medellín, Colombia)."
 readme = "README.md"
 license = "MIT"

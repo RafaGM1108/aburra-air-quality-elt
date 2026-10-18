@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.0.0] - 2026-10-18
+
+First release: daily ELT of SIATA PM2.5 (and Open-Meteo weather) for the Aburrá Valley,
+dbt marts with exceedances and ICA, analyses, a published aggregate data release and a
+public dashboard.
+
 ### Documentation
 
 - README screenshot replaced with one of the deployed dashboard, map included (#29).
@@ -28,6 +34,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- Version 1.0.0 in `pyproject.toml`, the package, the dbt project and the User-Agent
+  (#30). Pushing a `v*` tag creates the GitHub release from this changelog section
+  (`.github/workflows/release.yml`).
 - SIATA will not grant data access or confirm redistribution terms (#4): scope fixed to
   live PM2.5 plus the frozen 2023-07 → 2024-07 history, and only aggregated marts (no
   hourly series, no DuckDB file) will be published.
@@ -134,3 +143,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Removed
 
 - `notebooks/` and their tooling: analyses are scripts in `src/` run with `make`.
+
+[Unreleased]: https://github.com/RafaGM1108/aburra-air-quality-elt/compare/v1.0.0...HEAD
+[1.0.0]: https://github.com/RafaGM1108/aburra-air-quality-elt/releases/tag/v1.0.0

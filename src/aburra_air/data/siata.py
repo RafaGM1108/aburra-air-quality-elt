@@ -19,7 +19,7 @@ from tenacity import (
 BASE_URL = "https://geoportal.siata.gov.co/fastgeoapi/geodata"
 STATIONS_PATH = "/geodataJson/1/pm25_minio"
 SERIES_PATH = "/geographJson/1/pm25/{code}"
-USER_AGENT = "aburra-air-quality-elt/0.1 (+https://github.com/RafaGM1108/aburra-air-quality-elt)"
+USER_AGENT = "aburra-air-quality-elt/1.0 (+https://github.com/RafaGM1108/aburra-air-quality-elt)"
 TIMEOUT_S = 30.0
 MAX_ATTEMPTS = 5
 
