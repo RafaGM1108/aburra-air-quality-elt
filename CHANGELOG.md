@@ -15,6 +15,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- CI runs `make load transform dbt-docs` on the recorded fixtures inside the required
+  `test` check, offline, so a broken dbt model or test fails the PR (#16).
 - dbt tests and docs (#15): uniqueness of every model's key (generic
   `unique_combination` test), `not_null`, relationships to `dim_stations`, accepted
   values, and plausible ranges (generic `between` test: PM2.5 0–1000 µg/m³, ICA 0–500,
