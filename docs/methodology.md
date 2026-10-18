@@ -25,7 +25,9 @@ series lags about 7 h behind real time) and on demand (`workflow_dispatch`):
 2. `make extract`: today's run folder, plus the historical file the first time;
 3. save `data/01_raw/siata` to a new cache entry, even if some stations failed;
 4. `make load transform`: rebuild DuckDB and the marts from all landings;
-5. fail the run, and open or update a `Daily ELT failed` issue, if any step failed.
+5. `make quality`: freshness, row count, station coverage and duplicate-key checks with
+   the thresholds in `conf/base.yaml`;
+6. fail the run, and open or update a `Daily ELT failed` issue, if any step failed.
 
 The raw history lives only in the Actions cache: it is private to the repository's
 workflows and never published (see the terms in `docs/data.md`). GitHub evicts cache

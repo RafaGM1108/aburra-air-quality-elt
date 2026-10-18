@@ -55,6 +55,9 @@ jobs:
       - name: Load and transform
         run: make load transform
 
+      - name: Data-quality checks
+        run: make quality
+
       - name: Summary
         if: always()
         run: |

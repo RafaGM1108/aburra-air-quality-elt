@@ -15,6 +15,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- `make quality` (#18), run by the daily ELT after `make transform`: fails the run, listing
+  every problem at once, if the latest live hour is too old, the latest run folder is
+  short of rows, too few stations reported in the last 24 h, or a mart repeats a key.
+  Thresholds in `conf/base.yaml` (`quality:`).
 - `Daily ELT` workflow (#17): runs `make extract load transform` every day at 20:17
   America/Bogota and on demand, keeps the raw landings between runs in the Actions cache
   (never published), and opens or updates a `type:bug` issue when a run fails.
