@@ -86,7 +86,8 @@ markers = ["live: calls the real SIATA API; run with `make contract` (weekly in 
 [tool.coverage.run]
 source = ["aburra_air"]
 branch = true
-# Streamlit UI and `python -m` entry points are exercised manually, not by unit tests.
+# The Streamlit UI runs in AppTest smoke tests (tests/app) but under its own runner, and
+# `python -m` entry points are thin; neither is measured.
 omit = ["*/app/*", "*/__main__.py"]
 
 [tool.coverage.report]
