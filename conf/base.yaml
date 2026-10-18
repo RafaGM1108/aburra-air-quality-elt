@@ -30,4 +30,12 @@ quality:
   # Stations with at least one valid hour in the last 24 h of the latest series.
   min_stations_last_24h: 15
 
+# Analyses (`make analyze`) cover this window: the 12 full months of the historical
+# backfill, the only complete year available (see docs/data.md).
+analysis:
+  start: 2023-08-01
+  end: 2024-07-31
+  # Stations with fewer valid days than this share of the window are listed but not ranked.
+  min_coverage: 0.75
+
 params: {}

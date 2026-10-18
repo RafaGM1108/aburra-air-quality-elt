@@ -1,6 +1,7 @@
 """Typed loader for ``conf/base.yaml``."""
 
 import os
+from datetime import date
 from functools import lru_cache
 from pathlib import Path
 from typing import Any
@@ -54,6 +55,16 @@ class QualityConfig(BaseModel):
     min_stations_last_24h: int
 
 
+class AnalysisConfig(BaseModel):
+    """Window and coverage threshold for the analyses."""
+
+    model_config = ConfigDict(extra="forbid")
+
+    start: date
+    end: date
+    min_coverage: float
+
+
 class Config(BaseModel):
     """Root configuration object."""
 
@@ -63,6 +74,7 @@ class Config(BaseModel):
     paths: PathsConfig
     logging: LoggingConfig = LoggingConfig()
     quality: QualityConfig
+    analysis: AnalysisConfig
     params: dict[str, Any] = {}
 
 

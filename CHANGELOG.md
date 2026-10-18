@@ -15,6 +15,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- `make analyze` (#21) writes `data/08_reporting/station_ranking.csv` and `.png`:
+  stations ranked by 24 h exceedance days, then mean PM2.5, over the analysis window
+  in `conf/base.yaml` (Aug 2023 – Jul 2024, the complete historical year); stations
+  with < 75% valid days are listed unranked. The Daily ELT runs it and attaches the
+  outputs to the `data-latest` release.
 - ICA edge tests (#20): daily means move to `int_pm25_daily`, and a dbt unit test checks
   the ICA and category at every Res. 2254 Table 6 breakpoint edge against the real seed.
   The truncation rule for values between integer breakpoints is documented in
