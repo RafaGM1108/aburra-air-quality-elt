@@ -1,0 +1,13 @@
+version: 2
+
+seeds:
+  - name: ica_pm25_breakpoints
+    description: >
+      PM2.5 24 h ICA breakpoints from Resolución 2254 de 2017, Art. 20, Table 6
+      (µg/m³, integers with gaps; see docs/data.md).
+    config:
+      column_types:
+        ica_low: integer
+        ica_high: integer
+        pm25_low: integer
+        pm25_high: integer

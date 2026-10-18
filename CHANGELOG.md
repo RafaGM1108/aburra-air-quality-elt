@@ -15,6 +15,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- dbt intermediate and marts as Parquet (#14): `int_pm25_hourly` (live + historical),
+  `fct_pm25_hourly`, `fct_pm25_daily` (18 valid hours minimum, 24 h exceedance of
+  37 µg/m³, ICA from a seed of the Res. 2254 breakpoints), `agg_pm25_station_monthly`
+  and `dim_stations`.
 - dbt-duckdb project in `dbt/` (#13), run by `make transform` (`dbt build`): sources on
   the `raw` tables (live hourly with freshness thresholds, historical, stations) and
   staging views in schema `staging` that set implausible PM2.5 (outside 0–1000 µg/m³) to

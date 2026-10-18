@@ -32,6 +32,21 @@ run date (America/Bogota). Files are written once, atomically, and never changed
 
 Loading is an upsert, so re-running it changes nothing. `make transform` runs dbt
 (`dbt/`) on these tables: staging views live in schema `staging` of the same file.
+Intermediate and mart models are Parquet files (dbt-duckdb `external`):
+
+- `02_intermediate/int_pm25_hourly.parquet`: live and historical hours on one timeline
+  (live wins on overlap), with local date and hour.
+- `05_model_input/fct_pm25_hourly.parquet`: hourly PM2.5 by station (local use only,
+  never published).
+- `05_model_input/fct_pm25_daily.parquet`: daily mean by station; `NULL` unless the day
+  has at least 18 valid hours (75%, a project choice), with the 24 h exceedance flag
+  (> 37 µg/m³) and the ICA (concentration truncated to an integer before the breakpoint
+  lookup, Res. 2254 Art. 20–21).
+- `05_model_input/agg_pm25_station_monthly.parquet`: valid days, mean and exceedance days
+  by station and month.
+- `05_model_input/dim_stations.parquet`: stations, including codes seen only in the
+  historical data.
+
 
 ## Rules
 
