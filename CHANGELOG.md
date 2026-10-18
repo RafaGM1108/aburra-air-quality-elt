@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- SIATA will not grant data access or confirm redistribution terms (#4): scope fixed to
+  live PM2.5 plus the frozen 2023-07 → 2024-07 history, and only aggregated marts (no
+  hourly series, no DuckDB file) will be published.
+
 ### Added
 
 - Weekly `SIATA contract` workflow (and `make contract`): checks the live geoportal API

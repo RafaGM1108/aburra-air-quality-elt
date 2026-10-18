@@ -49,8 +49,10 @@ sources, endpoint limits and Resolución 2254 de 2017 thresholds in `docs/data.m
 - Live source is the SIATA geoportal API, PM2.5 only, 72 h window: the extractor must be
   idempotent and the load must deduplicate on `(station_code, timestamp_hour)`.
 - Times are America/Bogota (UTC-5, no DST); store timestamps with the offset.
-- SIATA terms are unconfirmed: one request per station per day, identifying User-Agent,
-  credit SIATA, and do not publish full data as a release asset until SIATA confirms.
+- SIATA terms are unconfirmed and will stay so (no access, #4): one request per station
+  per day, identifying User-Agent, credit SIATA, and publish aggregates only (daily or
+  coarser marts, pattern summaries), never raw data, the DuckDB file or hourly series.
+  Raw data is still landed, loaded and cleaned in the pipeline; only publishing is limited.
 - Roadmap: Phase 0 Setup → 1 Extract → 2 Load and backfill → 3 dbt models →
   4 Orchestration → 5 Analysis → 6 Dashboard → 7 Docs and v1.0.0.
 
