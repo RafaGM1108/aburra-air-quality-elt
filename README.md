@@ -102,7 +102,7 @@ caveats are in [`docs/findings.md`](docs/findings.md).
 
 ### Dashboard
 
-![Dashboard: daily means, monthly exceedances and hour-of-day profile of CEN-TRAF](docs/images/dashboard.png)
+![Deployed dashboard: ICA map of the latest valid day, and daily means, monthly exceedances and hour-of-day profile of BAR-TORR](docs/images/dashboard.png)
 
 **Live:** [aburra-air-quality-elt-2zkrjackvqbdcujyphpcc4.streamlit.app](https://aburra-air-quality-elt-2zkrjackvqbdcujyphpcc4.streamlit.app/).
 
