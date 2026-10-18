@@ -35,8 +35,9 @@ public dashboard.
 ### Changed
 
 - Version 1.0.0 in `pyproject.toml`, the package, the dbt project and the User-Agent
-  (#30). Pushing a `v*` tag creates the GitHub release from this changelog section
-  (`.github/workflows/release.yml`).
+  (#30). Pushing a `v*` tag, or running `.github/workflows/release.yml` by hand (it tags
+  the version in `pyproject.toml`), creates the GitHub release from this changelog
+  section.
 - SIATA will not grant data access or confirm redistribution terms (#4): scope fixed to
   live PM2.5 plus the frozen 2023-07 → 2024-07 history, and only aggregated marts (no
   hourly series, no DuckDB file) will be published.
