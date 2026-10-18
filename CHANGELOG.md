@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Documentation
+
+- README (#29): Mermaid architecture diagram, results table and figures from
+  `data/08_reporting/`, a dashboard screenshot, and the current commands, structure and
+  roadmap.
+
 ### Fixed
 
 - `data/08_reporting/` refreshed from Daily ELT run #5: adds `forecast_baselines.csv`
