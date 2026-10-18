@@ -15,6 +15,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- dbt-duckdb project in `dbt/` (#13), run by `make transform` (`dbt build`): sources on
+  the `raw` tables (live hourly with freshness thresholds, historical, stations) and
+  staging views in schema `staging` that set implausible PM2.5 (outside 0–1000 µg/m³) to
+  `NULL` while keeping the reported value.
 - Historical backfill (#11): `make extract` also lands SIATA's frozen `EntregaData1`
   PM2.5 file once in `01_raw/siata/historical/`, and `make load` upserts it into
   `raw.siata_pm25_historical` (`-9999` as `NULL`, quality flag kept). Bodies that are not

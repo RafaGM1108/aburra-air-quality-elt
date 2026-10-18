@@ -1,0 +1,18 @@
+version: 2
+
+sources:
+  - name: siata
+    description: SIATA PM2.5 data loaded by `make load` (schema `raw`). See docs/data.md.
+    schema: raw
+    tables:
+      - name: siata_pm25_hourly
+        description: Live hourly PM2.5 from the geoportal 72 h window, one row per station and hour.
+        loaded_at_field: timestamp_hour
+        freshness:
+          # The 72 h series lags ~7 h behind real time and the job runs daily.
+          warn_after: {count: 2, period: day}
+          error_after: {count: 4, period: day}
+      - name: siata_pm25_historical
+        description: Frozen EntregaData1 backfill (2023-07 → 2024-07); never updated, so no freshness.
+      - name: siata_stations
+        description: Station metadata from the latest landed stations list.
