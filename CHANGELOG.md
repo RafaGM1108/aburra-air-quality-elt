@@ -15,6 +15,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- Rolling `data-latest` release (#19): the Daily ELT stages `fct_pm25_daily`,
+  `agg_pm25_station_monthly` and `dim_stations` with `make publish` (an allowlist that
+  refuses any mart with an hourly column) and uploads them with SIATA attribution. Raw
+  data, the DuckDB file and hourly series are never published.
 - `make quality` (#18), run by the daily ELT after `make transform`: fails the run, listing
   every problem at once, if the latest live hour is too old, the latest run folder is
   short of rows, too few stations reported in the last 24 h, or a mart repeats a key.

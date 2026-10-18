@@ -33,6 +33,7 @@ class PathsConfig(BaseModel):
     reporting: Path
     database: Path
     dbt_project: Path
+    publish: Path
 
 
 class LoggingConfig(BaseModel):

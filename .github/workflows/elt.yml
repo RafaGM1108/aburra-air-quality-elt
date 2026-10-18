@@ -9,7 +9,7 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: read
+  contents: write  # update the data-latest release
   issues: write
 
 concurrency:
@@ -57,6 +57,25 @@ jobs:
 
       - name: Data-quality checks
         run: make quality
+
+      # Only daily/monthly aggregates are published (SIATA terms unconfirmed, docs/data.md).
+      - name: Stage aggregates
+        run: make publish
+
+      - name: Publish the data release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          tag=data-latest
+          notes="Aggregated PM2.5 marts for the Aburrá Valley: daily and monthly PM2.5 by station, 24 h exceedances, ICA and stations, rebuilt by the Daily ELT on $(date -u +%F).
+
+          Source: SIATA (Sistema de Alerta Temprana de Medellín y el Valle de Aburrá), Área Metropolitana del Valle de Aburrá. Raw data and hourly series are not published; see docs/data.md."
+          if gh release view "$tag" >/dev/null 2>&1; then
+            gh release edit "$tag" --notes "$notes"
+          else
+            gh release create "$tag" --title "Latest data (aggregates)" --notes "$notes" --latest=false
+          fi
+          gh release upload "$tag" build/publish/*.parquet --clobber
 
       - name: Summary
         if: always()
