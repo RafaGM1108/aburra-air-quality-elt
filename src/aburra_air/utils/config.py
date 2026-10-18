@@ -43,6 +43,16 @@ class LoggingConfig(BaseModel):
     level: str = "INFO"
 
 
+class QualityConfig(BaseModel):
+    """Thresholds for the post-run data-quality checks."""
+
+    model_config = ConfigDict(extra="forbid")
+
+    max_lag_hours: int
+    min_rows_latest_run: int
+    min_stations_last_24h: int
+
+
 class Config(BaseModel):
     """Root configuration object."""
 
@@ -51,6 +61,7 @@ class Config(BaseModel):
     project: ProjectConfig
     paths: PathsConfig
     logging: LoggingConfig = LoggingConfig()
+    quality: QualityConfig
     params: dict[str, Any] = {}
 
 

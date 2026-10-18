@@ -19,4 +19,13 @@ paths:
 logging:
   level: INFO
 
+# Data-quality checks run by `make quality` after each ELT run; any failure fails the run.
+quality:
+  # The 72 h series ends ~7 h before real time; more than this means SIATA stopped updating.
+  max_lag_hours: 36
+  # Hourly rows the latest run folder must provide (23 stations x 72 h when complete).
+  min_rows_latest_run: 1000
+  # Stations with at least one valid hour in the last 24 h of the latest series.
+  min_stations_last_24h: 15
+
 params: {}

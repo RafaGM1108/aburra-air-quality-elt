@@ -1,6 +1,6 @@
 PACKAGE := aburra_air
 
-.PHONY: help install lint typecheck test coverage contract extract load transform dbt-docs elt app docs clean
+.PHONY: help install lint typecheck test coverage contract extract load transform quality dbt-docs elt app docs clean
 
 help:  ## Show this help
 	@grep -E '^[a-z]+:.*## ' $(MAKEFILE_LIST) | awk -F':.*## ' '{printf "  %-10s %s\n", $$1, $$2}'
@@ -35,10 +35,13 @@ load:  ## Run the load pipeline (01_raw -> DuckDB)
 transform:  ## Run the transform pipeline (dbt)
 	uv run python -m $(PACKAGE).pipelines.transform_pipeline
 
+quality:  ## Fail if the loaded data is stale, incomplete or duplicated
+	uv run python -m $(PACKAGE).pipelines.quality_pipeline
+
 dbt-docs:  ## Generate the dbt docs site (dbt/target/index.html)
 	uv run python -m $(PACKAGE).pipelines.transform_pipeline docs generate
 
-elt: extract load transform  ## Run the full ELT
+elt: extract load transform quality  ## Run the full ELT
 
 app:  ## Launch the Streamlit app
 	uv run streamlit run src/$(PACKAGE)/app/main.py
