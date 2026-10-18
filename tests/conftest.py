@@ -1,3 +1,4 @@
+import shutil
 from pathlib import Path
 
 import httpx
@@ -5,6 +6,7 @@ import pytest
 
 from aburra_air.data import siata
 from aburra_air.data.historical import HISTORICAL_URL
+from aburra_air.utils.config import Config, get_config
 
 SIATA_FIXTURES = Path(__file__).parent / "fixtures" / "siata"
 
@@ -50,3 +52,23 @@ def siata_api() -> RecordedSiata:
 @pytest.fixture(autouse=True)
 def no_backoff(monkeypatch: pytest.MonkeyPatch) -> None:
     monkeypatch.setattr(siata.get.retry, "sleep", lambda _: None)
+
+
+@pytest.fixture
+def config(tmp_path: Path) -> Config:
+    """Config with every data path under ``tmp_path`` and the fixtures landed in raw."""
+    config = get_config()
+    day = tmp_path / "raw" / "siata" / "pm25" / "2026-10-10"
+    day.mkdir(parents=True)
+    shutil.copy(SIATA_FIXTURES / "pm25_stations.json", day / "stations.json")
+    for code in (12, 81):
+        shutil.copy(SIATA_FIXTURES / f"pm25_72h_{code}.json", day / f"{code}.json")
+    paths = config.paths.model_copy(
+        update={
+            "raw": tmp_path / "raw",
+            "intermediate": tmp_path / "intermediate",
+            "model_input": tmp_path / "model_input",
+            "database": tmp_path / "primary" / "test.duckdb",
+        }
+    )
+    return config.model_copy(update={"paths": paths})
