@@ -1,0 +1,46 @@
+version: 2
+
+models:
+  - name: stg_siata__pm25_live
+    description: Live hourly PM2.5 per station; implausible values set to NULL.
+    columns:
+      - name: station_code
+        description: SIATA station code (`codigo`).
+      - name: timestamp_hour
+        description: Hour of the reading, America/Bogota (TIMESTAMPTZ).
+      - name: pm25
+        description: PM2.5 in µg/m³, NULL when missing or outside the plausible range.
+      - name: pm25_reported
+        description: PM2.5 exactly as SIATA reported it.
+      - name: landed_on
+        description: Run date of the latest landing that provided the value.
+  - name: stg_siata__pm25_historical
+    description: Historical hourly PM2.5 per station; implausible values set to NULL.
+    columns:
+      - name: station_code
+        description: SIATA station code (`codigoSerial`).
+      - name: timestamp_hour
+        description: Hour of the reading, America/Bogota (TIMESTAMPTZ).
+      - name: pm25
+        description: PM2.5 in µg/m³, NULL when missing or outside the plausible range.
+      - name: pm25_reported
+        description: PM2.5 as in the file (-9999 already NULL).
+      - name: quality
+        description: SIATA `calidad` flag as text; its meaning is not documented by SIATA.
+  - name: stg_siata__stations
+    description: Official PM2.5 stations with location.
+    columns:
+      - name: station_code
+        description: SIATA station code.
+      - name: station_id
+        description: Short station id, e.g. `CEN-TRAF`.
+      - name: station_name
+        description: Station name.
+      - name: municipality
+        description: Municipality of the station.
+      - name: longitude
+        description: WGS84 longitude.
+      - name: latitude
+        description: WGS84 latitude.
+      - name: landed_on
+        description: Run date of the stations list the row comes from.

@@ -1,0 +1,11 @@
+# Paths come from conf/base.yaml via `make transform`; the defaults work when running dbt
+# from this folder.
+aburra_air:
+  target: dev
+  outputs:
+    dev:
+      type: duckdb
+      path: "{{ env_var('ABURRA_AIR_DUCKDB', '../data/03_primary/aburra_air.duckdb') }}"
+      threads: 4
+      settings:
+        TimeZone: America/Bogota

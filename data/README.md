@@ -30,7 +30,8 @@ run date (America/Bogota). Files are written once, atomically, and never changed
 - `siata_pm25_historical`: the backfill file, one row per `(station_code, timestamp_hour)`,
   `pm25` `NULL` where SIATA wrote `-9999`, plus SIATA's `quality` flag as text.
 
-Loading is an upsert, so re-running it changes nothing. dbt models build on these tables.
+Loading is an upsert, so re-running it changes nothing. `make transform` runs dbt
+(`dbt/`) on these tables: staging views live in schema `staging` of the same file.
 
 ## Rules
 

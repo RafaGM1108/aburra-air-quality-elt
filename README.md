@@ -86,10 +86,10 @@ make lint typecheck test     # check everything works
 
 | Phase | Milestone | Status |
 |-------|-----------|--------|
-| 0 | Phase 0 - Setup | 🟨 |
-| 1 | Phase 1 - Extract | ⬜ |
-| 2 | Phase 2 - Load and backfill | ⬜ |
-| 3 | Phase 3 - dbt models | ⬜ |
+| 0 | Phase 0 - Setup | ✅ |
+| 1 | Phase 1 - Extract | ✅ (optional Open-Meteo pending) |
+| 2 | Phase 2 - Load and backfill | ✅ |
+| 3 | Phase 3 - dbt models | 🟨 |
 | 4 | Phase 4 - Orchestration | ⬜ |
 | 5 | Phase 5 - Analysis | ⬜ |
 | 6 | Phase 6 - Dashboard | ⬜ |

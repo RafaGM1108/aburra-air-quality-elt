@@ -32,6 +32,7 @@ class PathsConfig(BaseModel):
     model_input: Path
     reporting: Path
     database: Path
+    dbt_project: Path
 
 
 class LoggingConfig(BaseModel):

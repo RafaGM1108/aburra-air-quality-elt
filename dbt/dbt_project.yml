@@ -1,0 +1,22 @@
+name: aburra_air
+version: "0.1.0"
+profile: aburra_air
+config-version: 2
+
+model-paths: ["models"]
+macro-paths: ["macros"]
+seed-paths: ["seeds"]
+test-paths: ["tests"]
+target-path: target
+clean-targets: [target, logs]
+
+vars:
+  # Values outside this range (µg/m³) are sensor errors, not air quality: set to NULL in staging.
+  pm25_min_plausible: 0
+  pm25_max_plausible: 1000
+
+models:
+  aburra_air:
+    staging:
+      +materialized: view
+      +schema: staging
