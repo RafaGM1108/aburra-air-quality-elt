@@ -95,7 +95,10 @@ def marts(tmp_path: Path) -> Path:
                 SELECT station_code, DATE '2024-01-01' + i::INTEGER AS date_local,
                     valid AS is_valid_day,
                     CASE WHEN valid THEN pm25 END AS pm25_mean,
-                    CASE WHEN valid THEN pm25 > 37 END AS exceeds_24h_limit
+                    CASE WHEN valid THEN pm25 > 37 END AS exceeds_24h_limit,
+                    CASE WHEN valid AND pm25 > 37 THEN 'Dañina a la salud de grupos sensibles'
+                        WHEN valid THEN 'Aceptable' END AS ica_category,
+                    CASE WHEN valid THEN 80 END AS ica
                 FROM (
                     SELECT 1 AS station_code, i, true AS valid,
                         CASE WHEN i < 4 THEN 50.0 ELSE 20.0 END AS pm25 FROM range(10) t(i)
@@ -107,9 +110,10 @@ def marts(tmp_path: Path) -> Path:
             ) TO '{folder / "fct_pm25_daily.parquet"}' (FORMAT parquet)
         """)
         con.execute(f"""
-            COPY (SELECT * FROM (VALUES (1, 'AAA', 'Alpha', 'Medellín'),
-                (2, 'BBB', 'Beta', 'Bello'), (3, 'CCC', 'Gamma', 'Itagüí'))
-                t(station_code, station_id, station_name, municipality))
+            COPY (SELECT * FROM (VALUES (1, 'AAA', 'Alpha', 'Medellín', 6.25, -75.57),
+                (2, 'BBB', 'Beta', 'Bello', 6.33, -75.55),
+                (3, 'CCC', 'Gamma', 'Itagüí', NULL, NULL))
+                t(station_code, station_id, station_name, municipality, latitude, longitude))
             TO '{folder / "dim_stations.parquet"}' (FORMAT parquet)
         """)
         # Hour-of-day profile for January 2024: station 1 reports every hour, 30 µg/m³ on
@@ -121,5 +125,12 @@ def marts(tmp_path: Path) -> Path:
                 FROM range(24) t(h), (VALUES (false, 8), (true, 2)) d(w, n),
                     LATERAL (SELECT CASE WHEN w THEN 20.0 WHEN h = 7 THEN 40.0 ELSE 30.0 END AS v)
             ) TO '{folder / "agg_pm25_hour_of_day.parquet"}' (FORMAT parquet)
+        """)
+        con.execute(f"""
+            COPY (SELECT station_code, DATE '2024-01-01' AS month,
+                    count(*) FILTER (WHERE is_valid_day) AS valid_days, avg(pm25_mean) AS pm25_mean,
+                    count(*) FILTER (WHERE exceeds_24h_limit) AS exceedance_days
+                FROM read_parquet('{folder / "fct_pm25_daily.parquet"}') GROUP BY ALL)
+            TO '{folder / "agg_pm25_station_monthly.parquet"}' (FORMAT parquet)
         """)
     return folder
