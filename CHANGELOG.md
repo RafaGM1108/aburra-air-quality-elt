@@ -19,6 +19,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- Patterns (#22): new publishable mart `agg_pm25_hour_of_day`, and `make analyze` writes
+  `diurnal_profile`, `weekday_profile` and `monthly_profile` (CSV + PNG) to
+  `data/08_reporting`, each with valid/possible counts and the pooled coverage printed
+  on the figure.
 - `make analyze` (#21) writes `data/08_reporting/station_ranking.csv` and `.png`:
   stations ranked by 24 h exceedance days, then mean PM2.5, over the analysis window
   in `conf/base.yaml` (Aug 2023 – Jul 2024, the complete historical year); stations

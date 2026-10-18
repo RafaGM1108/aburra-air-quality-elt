@@ -13,6 +13,7 @@ def test_run_stages_the_real_marts(config: Config, tmp_path: Path) -> None:
     transform(config)
     staged = run(config)
     assert sorted(p.name for p in staged) == [
+        "agg_pm25_hour_of_day.parquet",
         "agg_pm25_station_monthly.parquet",
         "dim_stations.parquet",
         "fct_pm25_daily.parquet",

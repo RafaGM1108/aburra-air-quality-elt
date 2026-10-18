@@ -10,7 +10,12 @@ from pathlib import Path
 
 import duckdb
 
-PUBLISHABLE = ("agg_pm25_station_monthly", "dim_stations", "fct_pm25_daily")
+PUBLISHABLE = (
+    "agg_pm25_hour_of_day",
+    "agg_pm25_station_monthly",
+    "dim_stations",
+    "fct_pm25_daily",
+)
 FORBIDDEN_COLUMNS = frozenset({"timestamp_hour", "hour_local"})
 
 logger = logging.getLogger(__name__)
