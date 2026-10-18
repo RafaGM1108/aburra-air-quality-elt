@@ -3,26 +3,48 @@ version: 2
 models:
   - name: stg_siata__pm25_live
     description: Live hourly PM2.5 per station; implausible values set to NULL.
+    data_tests:
+      - unique_combination:
+          arguments:
+            columns: [station_code, timestamp_hour]
     columns:
       - name: station_code
         description: SIATA station code (`codigo`).
+        data_tests: [not_null]
       - name: timestamp_hour
         description: Hour of the reading, America/Bogota (TIMESTAMPTZ).
+        data_tests: [not_null]
       - name: pm25
         description: PM2.5 in µg/m³, NULL when missing or outside the plausible range.
+        data_tests:
+          - between:
+              arguments:
+                min_value: "{{ var('pm25_min_plausible') }}"
+                max_value: "{{ var('pm25_max_plausible') }}"
       - name: pm25_reported
         description: PM2.5 exactly as SIATA reported it.
       - name: landed_on
         description: Run date of the latest landing that provided the value.
   - name: stg_siata__pm25_historical
     description: Historical hourly PM2.5 per station; implausible values set to NULL.
+    data_tests:
+      - unique_combination:
+          arguments:
+            columns: [station_code, timestamp_hour]
     columns:
       - name: station_code
         description: SIATA station code (`codigoSerial`).
+        data_tests: [not_null]
       - name: timestamp_hour
         description: Hour of the reading, America/Bogota (TIMESTAMPTZ).
+        data_tests: [not_null]
       - name: pm25
         description: PM2.5 in µg/m³, NULL when missing or outside the plausible range.
+        data_tests:
+          - between:
+              arguments:
+                min_value: "{{ var('pm25_min_plausible') }}"
+                max_value: "{{ var('pm25_max_plausible') }}"
       - name: pm25_reported
         description: PM2.5 as in the file (-9999 already NULL).
       - name: quality
@@ -32,6 +54,7 @@ models:
     columns:
       - name: station_code
         description: SIATA station code.
+        data_tests: [unique, not_null]
       - name: station_id
         description: Short station id, e.g. `CEN-TRAF`.
       - name: station_name
@@ -40,7 +63,11 @@ models:
         description: Municipality of the station.
       - name: longitude
         description: WGS84 longitude.
+        data_tests:
+          - between: {arguments: {min_value: -76.0, max_value: -75.0}}  # Aburrá Valley
       - name: latitude
         description: WGS84 latitude.
+        data_tests:
+          - between: {arguments: {min_value: 5.9, max_value: 6.7}}  # Aburrá Valley
       - name: landed_on
         description: Run date of the stations list the row comes from.
