@@ -15,7 +15,8 @@ release, refreshed by the Daily ELT, so the host needs no pipeline, database or 
    - Advanced settings → Python version: **3.12**
 3. Deploy. Community Cloud installs `requirements.txt` (exported from `uv.lock` with
    `make requirements`; CI fails if it is stale) and reads `.streamlit/config.toml`.
-4. Put the app URL in the README.
+4. Put the app URL in the README. The deployed app is at
+   <https://aburra-air-quality-elt-2zkrjackvqbdcujyphpcc4.streamlit.app/>.
 
 The app re-downloads any mart older than 24 hours (checked at most once an hour), so it
 follows the Daily ELT without a reboot; if the download fails it keeps the copy it has.
