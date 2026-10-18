@@ -45,6 +45,7 @@ def lines(
     ylabel: str,
     title: str,
     note: str,
+    xticklabels: list[str] | None = None,
 ) -> Path:
     """Save a line chart with one line per series and a legend.
 
@@ -56,6 +57,7 @@ def lines(
         ylabel: Y axis label.
         title: Chart title.
         note: Source and coverage line printed under the chart.
+        xticklabels: Optional label for each x value (e.g. months), rotated.
 
     Returns:
         ``path``.
@@ -63,6 +65,8 @@ def lines(
     figure, axis = plt.subplots(figsize=(8, 4.5))
     for label, values in series.items():
         axis.plot(x, [float("nan") if v is None else v for v in values], marker="o", label=label)
+    if xticklabels is not None:
+        axis.set_xticks(x, xticklabels, rotation=45, ha="right")
     axis.set_xlabel(xlabel)
     axis.set_ylabel(ylabel)
     axis.set_title(title)

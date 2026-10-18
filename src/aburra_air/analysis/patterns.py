@@ -173,9 +173,10 @@ def patterns(model_input: Path, reporting: Path, analysis: AnalysisConfig) -> li
                 reporting / "monthly_profile.png",
                 x=[float(i) for i in range(len(months))],
                 series={"mean of daily means": [m for _, m in months]},
-                xlabel="Month index from " + (str(months[0][0]) if months else "-"),
+                xlabel="Month",
                 ylabel="PM2.5 (µg/m³)",
                 title=f"Monthly PM2.5, all stations, {window}",
+                xticklabels=[str(month) for month, _ in months],
                 note=f"Source: SIATA. Coverage: {coverage:.0%} of station-days valid.",
             )
         )
