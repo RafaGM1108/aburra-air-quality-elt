@@ -78,3 +78,7 @@ episode, no hourly series) is published with the other analysis outputs.
 There are no notebooks. Exploratory and statistical analyses are scripts in `src/` run with
 `make`; they write figures (PNG) and tables (CSV/JSON) to `data/08_reporting/`, and their
 conclusions are written in `docs/`.
+
+Some analyses need hourly data, which only exists inside the Daily ELT, so the committed
+`data/08_reporting/` files are that run's outputs: `make fetch-reporting` downloads them
+from the `data-latest` release and records their provenance. See [Findings](findings.md).

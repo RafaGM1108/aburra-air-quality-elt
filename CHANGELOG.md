@@ -19,6 +19,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- Findings (#24): `docs/findings.md` summarizes the station ranking, seasonal, weekly and
+  diurnal patterns and critical episodes, citing only `data/08_reporting/` files from
+  the Daily ELT run of 2026-10-18 (fetched with the new `make fetch-reporting`, which
+  writes `provenance.json` with each file's upload time and SHA-256).
 - Critical episodes (#23): `make analyze` writes `data/08_reporting/episodes.csv` with
   prevención/alerta/emergencia episodes per station from 24 h moving averages and the
   Art. 11/13 48 h / 75% rule; tested on synthetic series (start, end, short spikes, dips,
