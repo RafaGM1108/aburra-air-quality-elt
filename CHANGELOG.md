@@ -20,6 +20,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- Dashboard smoke tests (#26) with Streamlit `AppTest` on the fixture marts, in the
+  required `test` job: the app loads, every station × period renders without an
+  exception, and an empty period shows a message.
 - Streamlit + plotly dashboard (#25), `make app`: map of the latest valid day's ICA by
   station, daily means with the 37 µg/m³ line, monthly exceedance days and the
   hour-of-day profile, with a period switch (historical year / live / all). It reads only
