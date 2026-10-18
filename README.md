@@ -27,6 +27,11 @@ history and makes it easy to answer which stations, hours and seasons are worst.
   collected daily. Historical JSON files cover 2023-07-31 → 2024-07-31 for a backfill.
 - **Open-Meteo** (optional): hourly weather covariates.
 
+Only aggregates are published: daily and monthly PM2.5 by station, exceedances, ICA and
+stations, as Parquet in the rolling
+[`data-latest`](https://github.com/RafaGM1108/aburra-air-quality-elt/releases/tag/data-latest)
+release refreshed by the daily run. Raw data and hourly series stay private.
+
 Endpoints, limitations, terms and the Resolución 2254 thresholds are in
 [`docs/data.md`](docs/data.md). Data is © SIATA / Área Metropolitana del Valle de Aburrá.
 
@@ -89,8 +94,8 @@ make lint typecheck test     # check everything works
 | 0 | Phase 0 - Setup | ✅ |
 | 1 | Phase 1 - Extract | ✅ (optional Open-Meteo pending) |
 | 2 | Phase 2 - Load and backfill | ✅ |
-| 3 | Phase 3 - dbt models | 🟨 |
-| 4 | Phase 4 - Orchestration | ⬜ |
+| 3 | Phase 3 - dbt models | ✅ |
+| 4 | Phase 4 - Orchestration | ✅ |
 | 5 | Phase 5 - Analysis | ⬜ |
 | 6 | Phase 6 - Dashboard | ⬜ |
 | 7 | Phase 7 - Docs and v1.0.0 | ⬜ |
