@@ -81,6 +81,22 @@ Hourly weather for the valley from the [Open-Meteo](https://open-meteo.com/) for
 historical APIs: no key, free for non-commercial use, data under CC BY 4.0 (from
 Open-Meteo's published terms; not re-checked for this project).
 
+- **What:** hourly `temperature_2m`, `relative_humidity_2m`, `precipitation`,
+  `wind_speed_10m`, `wind_direction_10m` and `boundary_layer_height` at one grid point on
+  the valley floor (6.2518, -75.5636, Medellín), hours in America/Bogota
+  (`aburra_air.data.open_meteo`).
+- **Daily:** the forecast API with `past_days=3&forecast_days=0` (the last three full
+  days, no forecast hours), landed as `01_raw/open_meteo/hourly/<run date>.json`.
+  Consecutive files overlap, so one missed day leaves no gap.
+- **Backfill:** the archive API for 2023-07-31 to 2024-07-31, the span of the SIATA
+  historical file, landed once as `01_raw/open_meteo/historical/hourly.json`.
+- Same client, retries and landing rules as SIATA: identifying User-Agent, a landed file
+  is never fetched again, a malformed response is not landed. Two requests per day at
+  most.
+- **Attribution:** weather data by [Open-Meteo.com](https://open-meteo.com/), licensed
+  under [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/). Credit it wherever the
+  data, or anything derived from it, is shown.
+
 ## Colombian air quality standard: Resolución 2254 de 2017
 
 Source: official PDF from MinAmbiente,

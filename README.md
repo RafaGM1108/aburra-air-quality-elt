@@ -28,7 +28,9 @@ history and makes it easy to answer which stations, hours and seasons are worst.
 
 - **SIATA** geoportal API: hourly PM2.5 for ~23 official stations (72 h rolling window),
   collected daily. Historical JSON files cover 2023-07-31 → 2024-07-31 for a backfill.
-- **Open-Meteo** (optional, not implemented yet): hourly weather covariates.
+- **Open-Meteo**: hourly temperature, humidity, precipitation, wind and boundary-layer
+  height for the valley, collected daily, plus the same historical year. Weather data by
+  [Open-Meteo.com](https://open-meteo.com/) (CC BY 4.0).
 
 Only aggregates are published: daily and monthly PM2.5 by station, exceedances, ICA and
 stations, as Parquet in the rolling
@@ -152,7 +154,7 @@ make lint typecheck test     # check everything works
 | Phase | Milestone | Status |
 |-------|-----------|--------|
 | 0 | Phase 0 - Setup | ✅ |
-| 1 | Phase 1 - Extract | ✅ (optional Open-Meteo pending) |
+| 1 | Phase 1 - Extract | ✅ |
 | 2 | Phase 2 - Load and backfill | ✅ |
 | 3 | Phase 3 - dbt models | ✅ |
 | 4 | Phase 4 - Orchestration | ✅ |
