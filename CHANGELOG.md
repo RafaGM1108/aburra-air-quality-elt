@@ -7,8 +7,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Documentation
+
+- README (#29): Mermaid architecture diagram, results table and figures from
+  `data/08_reporting/`, a dashboard screenshot, and the current commands, structure and
+  roadmap.
+
 ### Fixed
 
+- `data/08_reporting/` refreshed from Daily ELT run #5: adds `forecast_baselines.csv`
+  and the fixed `monthly_profile.png`; `docs/findings.md` gains a forecast section (#27,
+  #57).
+- Station ranking ties break on the unrounded mean, then station code, so reruns give the
+  same order (#63).
 - `monthly_profile.png` labels the x axis with `YYYY-MM` instead of a month index (#57).
 - Station id, name and municipality are trimmed in staging; SIATA writes `"Medellín "` (#52).
 
@@ -20,6 +31,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- Deploy preparation (#28): `requirements.txt` exported from `uv.lock` (`make
+  requirements`, checked in CI), `.streamlit/config.toml`, and `docs/deploy.md` with the
+  Streamlit Community Cloud steps. The dashboard re-downloads marts older than 24 h from
+  the data release and keeps its copy if that fails.
 - Next-day PM2.5 baselines (#27): `make analyze` writes
   `data/08_reporting/forecast_baselines.csv` with MAE, RMSE, bias and skill versus
   persistence of persistence, 7-day mean and same-weekday-last-week forecasts of the

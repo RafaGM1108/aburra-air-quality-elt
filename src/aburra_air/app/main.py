@@ -36,9 +36,9 @@ st.set_page_config(page_title="Aburrá Valley PM2.5", layout="wide")
 
 @st.cache_resource(ttl=3600)
 def marts_folder() -> str:
-    """Local marts folder, filled from the data release if a mart is missing."""
+    """Local marts folder, filled from the data release when a mart is missing or > 1 day old."""
     with httpx.Client(follow_redirects=True, timeout=60) as client:
-        return str(marts.ensure_marts(config.paths.model_input, client))
+        return str(marts.ensure_marts(config.paths.model_input, client, max_age_hours=24))
 
 
 folder = Path(marts_folder())

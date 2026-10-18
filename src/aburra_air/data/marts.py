@@ -6,6 +6,7 @@ Streamlit Community Cloud) works without running the pipeline.
 """
 
 import logging
+import time
 from datetime import date
 from pathlib import Path
 
@@ -22,12 +23,16 @@ RELEASE_URL = (
 )
 
 
-def ensure_marts(folder: Path, client: httpx.Client) -> Path:
-    """Download every mart missing from ``folder`` from the ``data-latest`` release.
+def ensure_marts(folder: Path, client: httpx.Client, max_age_hours: float | None = None) -> Path:
+    """Download marts missing from ``folder`` (or older than ``max_age_hours``) from the release.
+
+    A stale mart that cannot be refreshed is kept, so the app still works offline.
 
     Args:
         folder: Where the marts live (``05_model_input``).
         client: HTTP client that follows redirects.
+        max_age_hours: Re-download marts last written longer ago than this; ``None`` never
+            refreshes an existing mart.
 
     Returns:
         ``folder``.
@@ -39,9 +44,17 @@ def ensure_marts(folder: Path, client: httpx.Client) -> Path:
     for name in MARTS:
         path = folder / f"{name}.parquet"
         if path.exists():
+            age_hours = (time.time() - path.stat().st_mtime) / 3600
+            if max_age_hours is None or age_hours <= max_age_hours:
+                continue
+        try:
+            response = client.get(RELEASE_URL.format(name=path.name))
+            response.raise_for_status()
+        except httpx.HTTPError:
+            if not path.exists():
+                raise
+            logger.warning("refresh failed, keeping stale mart=%s", path.name)
             continue
-        response = client.get(RELEASE_URL.format(name=path.name))
-        response.raise_for_status()
         partial = path.with_name(path.name + ".part")
         partial.write_bytes(response.content)
         partial.replace(path)

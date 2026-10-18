@@ -1,0 +1,9 @@
+# Used by `make app` and Streamlit Community Cloud.
+[server]
+headless = true
+
+[browser]
+gatherUsageStats = false
+
+[theme]
+base = "light"

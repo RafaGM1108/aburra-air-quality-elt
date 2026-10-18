@@ -2,7 +2,7 @@
 
 Every number on this page comes from a file in
 [`data/08_reporting/`](https://github.com/RafaGM1108/aburra-air-quality-elt/tree/main/data/08_reporting).
-Those files are the outputs of the Daily ELT run uploaded on 2026-10-18T19:22:50Z, fetched
+Those files are the outputs of the Daily ELT run uploaded on 2026-10-18T20:03Z, fetched
 with `make fetch-reporting`. `provenance.json` lists each file's upload time and SHA-256.
 To refresh them, run `make fetch-reporting` after a Daily ELT run.
 
@@ -67,6 +67,23 @@ Episodes follow the Art. 11/13 rule on 24 h moving averages, per station.
   peaked at 625.5 µg/m³, the highest peak in the file. The next highest is 278.2 µg/m³
   (also CEN-TRAF), and no other station's episode peaks above 108.1 µg/m³. Check this
   value against SIATA's own reports before quoting it.
+
+## Next-day forecast baselines (`forecast_baselines.csv`)
+
+All three naive forecasts are scored on the same 5,612 station-days.
+
+| Method | MAE | RMSE | Bias | Skill vs persistence |
+|--------|-----|------|------|----------------------|
+| 7-day mean | 6.11 | 13.56 | -0.05 | 0.002 |
+| Persistence | 6.12 | 16.28 | -0.01 | 0.0 |
+| Same weekday last week | 7.72 | 17.58 | -0.10 | -0.26 |
+
+- The 7-day mean and persistence have the same MAE (about 6.1 µg/m³), but the 7-day
+  mean has a lower RMSE (13.56 vs 16.28): it makes fewer large errors.
+- Same weekday last week is 26% worse than persistence on MAE, so the weekly cycle seen in
+  the day-of-week profile is too weak to forecast with on its own.
+- None of the baselines is biased (|bias| ≤ 0.10 µg/m³). Any future model has to beat
+  an MAE of 6.11 µg/m³ to be useful.
 
 ## Limits
 
