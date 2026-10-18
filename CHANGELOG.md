@@ -15,6 +15,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- Historical backfill (#11): `make extract` also lands SIATA's frozen `EntregaData1`
+  PM2.5 file once in `01_raw/siata/historical/`, and `make load` upserts it into
+  `raw.siata_pm25_historical` (`-9999` as `NULL`, quality flag kept). Bodies that are not
+  a non-empty list of stations are never landed. The load now binds whole columns per
+  file instead of `executemany`, about 100x faster.
 - `make load` upserts every landed SIATA file into DuckDB
   (`data/03_primary/aburra_air.duckdb`): `raw.siata_pm25_hourly` keyed on
   `(station_code, timestamp_hour)` with timestamps in America/Bogota, and

@@ -1,0 +1,10 @@
+[
+  {"codigoSerial": 12, "nombreCorto": "CEN-TRAF", "nombre": "Estación Tráfico Centro", "datos": [
+    {"fecha": "2023-07-31 00:00:00", "valor": 21.0, "calidad": 1, "variableConsulta": "pm25"},
+    {"fecha": "2023-07-31 01:00:00", "valor": -9999, "calidad": 151, "variableConsulta": "pm25"},
+    {"fecha": "2023-07-31 02:00:00", "valor": 18.5, "calidad": 1, "variableConsulta": "pm25"}
+  ]},
+  {"codigoSerial": 81, "nombreCorto": "BAR-TORR", "nombre": "Torre Social", "datos": [
+    {"fecha": "2023-07-31 00:00:00", "valor": 9.0, "calidad": 1, "variableConsulta": "pm25"}
+  ]}
+]

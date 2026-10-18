@@ -6,6 +6,7 @@ import httpx
 
 from aburra_air.data import siata
 from aburra_air.data.extract import extract_siata, today
+from aburra_air.data.historical import backfill_siata
 from aburra_air.utils.config import Config, get_config
 from aburra_air.utils.log import get_logger
 
@@ -28,3 +29,4 @@ def run(
     logger.info("Writing to %s", config.paths.raw)
     with client or siata.make_client() as http:
         extract_siata(http, config.paths.raw, run_date or today())
+        backfill_siata(http, config.paths.raw)  # one request ever, then a no-op
