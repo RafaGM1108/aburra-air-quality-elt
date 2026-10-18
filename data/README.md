@@ -16,6 +16,9 @@ before it, by code in `src/`, so any layer can be rebuilt from `01_raw`.
 `01_raw/siata/pm25/<YYYY-MM-DD>/stations.json` and `<station code>.json`, one folder per
 run date (America/Bogota). Files are written once, atomically, and never changed.
 
+`01_raw/siata/historical/pm25.json`: SIATA's frozen `EntregaData1` PM2.5 file
+(2023-07 → 2024-07), landed once by `make extract` and never fetched again.
+
 ## DuckDB
 
 `make load` reads every `01_raw` run folder (oldest first) into
@@ -24,6 +27,8 @@ run date (America/Bogota). Files are written once, atomically, and never changed
 - `siata_pm25_hourly`: one row per `(station_code, timestamp_hour)`; `timestamp_hour` is
   a `TIMESTAMPTZ` (America/Bogota), `pm25` is `NULL` when SIATA reports it missing.
 - `siata_stations`: station metadata from the latest `stations.json`.
+- `siata_pm25_historical`: the backfill file, one row per `(station_code, timestamp_hour)`,
+  `pm25` `NULL` where SIATA wrote `-9999`, plus SIATA's `quality` flag as text.
 
 Loading is an upsert, so re-running it changes nothing. dbt models build on these tables.
 
