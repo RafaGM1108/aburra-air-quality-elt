@@ -1,6 +1,6 @@
 PACKAGE := aburra_air
 
-.PHONY: help install lint typecheck test coverage contract extract load transform quality analyze publish dbt-docs elt app docs clean
+.PHONY: help install lint typecheck test coverage contract extract load transform quality analyze publish fetch-reporting dbt-docs elt app docs clean
 
 help:  ## Show this help
 	@grep -E '^[a-z]+:.*## ' $(MAKEFILE_LIST) | awk -F':.*## ' '{printf "  %-10s %s\n", $$1, $$2}'
@@ -43,6 +43,9 @@ analyze:  ## Run the analyses on the marts (tables and figures to data/08_report
 
 publish:  ## Stage the aggregated marts for the data release (build/publish)
 	uv run python -m $(PACKAGE).pipelines.publish_pipeline
+
+fetch-reporting:  ## Download the latest published analysis outputs to data/08_reporting
+	uv run python -m $(PACKAGE).pipelines.publish_pipeline fetch
 
 dbt-docs:  ## Generate the dbt docs site (dbt/target/index.html)
 	uv run python -m $(PACKAGE).pipelines.transform_pipeline docs generate
