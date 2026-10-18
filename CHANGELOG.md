@@ -15,6 +15,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- ICA edge tests (#20): daily means move to `int_pm25_daily`, and a dbt unit test checks
+  the ICA and category at every Res. 2254 Table 6 breakpoint edge against the real seed.
+  The truncation rule for values between integer breakpoints is documented in
+  `docs/methodology.md`.
 - Rolling `data-latest` release (#19): the Daily ELT stages `fct_pm25_daily`,
   `agg_pm25_station_monthly` and `dim_stations` with `make publish` (an allowlist that
   refuses any mart with an hourly column) and uploads them with SIATA attribution. Raw
