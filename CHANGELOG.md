@@ -19,6 +19,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- Streamlit + plotly dashboard (#25), `make app`: map of the latest valid day's ICA by
+  station, daily means with the 37 µg/m³ line, monthly exceedance days and the
+  hour-of-day profile, with a period switch (historical year / live / all). It reads only
+  the published aggregates (`aburra_air.data.marts`), downloading any missing mart from
+  the `data-latest` release, handles stations without data, and credits SIATA.
 - Findings (#24): `docs/findings.md` summarizes the station ranking, seasonal, weekly and
   diurnal patterns and critical episodes, citing only `data/08_reporting/` files from
   the Daily ELT run of 2026-10-18 (fetched with the new `make fetch-reporting`, which
