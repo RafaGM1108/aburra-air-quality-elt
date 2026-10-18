@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- `monthly_profile.png` labels the x axis with `YYYY-MM` instead of a month index (#57).
 - Station id, name and municipality are trimmed in staging; SIATA writes `"Medellín "` (#52).
 
 ### Changed
