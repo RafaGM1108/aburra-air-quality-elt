@@ -19,7 +19,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   (`data/03_primary/aburra_air.duckdb`): `raw.siata_pm25_hourly` keyed on
   `(station_code, timestamp_hour)` with timestamps in America/Bogota, and
   `raw.siata_stations`. Overlapping runs are deduplicated, newer values win, and a newer
-  `null` never erases a value (#10).
+  `null` never erases a value (#10). Tests cover re-loads, overlaps, nulls, rollback of a
+  malformed run folder and the -05:00 offset (#12).
 - Weekly `SIATA contract` workflow (and `make contract`): checks the live geoportal API
   still returns the fields the pipeline relies on, and opens or updates a `type:bug` issue
   when it does not. Live tests are marked `live` and excluded from the default run (#8).
