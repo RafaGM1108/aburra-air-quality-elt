@@ -1,0 +1,51 @@
+{
+  "source": "https://github.com/RafaGM1108/aburra-air-quality-elt/releases/tag/data-latest",
+  "published_at": "2026-10-18T18:51:55Z",
+  "files": [
+    {
+      "name": "diurnal_profile.csv",
+      "updated_at": "2026-10-18T19:22:50Z",
+      "sha256": "c0cfa519de2ac2bc61c449923ef5fc29be3243f7cb6932663346bb4a2ecbbaf4"
+    },
+    {
+      "name": "diurnal_profile.png",
+      "updated_at": "2026-10-18T19:22:51Z",
+      "sha256": "e01c9107a6536fe718b5986f7f52092498f5e54119b6428a7c96f86706b60491"
+    },
+    {
+      "name": "episodes.csv",
+      "updated_at": "2026-10-18T19:22:50Z",
+      "sha256": "52d6a0aded7de99a6fc89d120cf430ad46b359ce455c687c472b575157c75f06"
+    },
+    {
+      "name": "monthly_profile.csv",
+      "updated_at": "2026-10-18T19:22:51Z",
+      "sha256": "adc1f458ced77b93738272d0760cbdb8caf7dd17a0204df0901bafa16817d448"
+    },
+    {
+      "name": "monthly_profile.png",
+      "updated_at": "2026-10-18T19:22:51Z",
+      "sha256": "2a53351be51e47c326f56053d824a24facc8e6e2264bfffa33360bc5b5c8cd6d"
+    },
+    {
+      "name": "station_ranking.csv",
+      "updated_at": "2026-10-18T19:22:51Z",
+      "sha256": "e24a310daf4a936a7014df568ba8a569a7195878a1081d8fd02efb7e7fa3e420"
+    },
+    {
+      "name": "station_ranking.png",
+      "updated_at": "2026-10-18T19:22:51Z",
+      "sha256": "ec451fa1cc1cacbba8d98faabe19f7595b90d98ff80676a64dd7bb37301af7de"
+    },
+    {
+      "name": "weekday_profile.csv",
+      "updated_at": "2026-10-18T19:22:51Z",
+      "sha256": "884bb9e37aec059c2134a15b862faaf69941c5c068872a242769922e63defde5"
+    },
+    {
+      "name": "weekday_profile.png",
+      "updated_at": "2026-10-18T19:22:51Z",
+      "sha256": "fdf269ea4a99709e19782580cb7af979ea1a5a4241a33e39f0703aba927700db"
+    }
+  ]
+}
