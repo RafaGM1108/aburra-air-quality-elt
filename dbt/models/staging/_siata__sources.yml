@@ -16,3 +16,11 @@ sources:
         description: Frozen EntregaData1 backfill (2023-07 → 2024-07); never updated, so no freshness.
       - name: siata_stations
         description: Station metadata from the latest landed stations list.
+      - name: open_meteo_hourly
+        description: >
+          Hourly weather from Open-Meteo at one Aburrá Valley grid point. Data by
+          Open-Meteo.com, CC BY 4.0.
+        loaded_at_field: timestamp_hour
+        freshness:
+          warn_after: {count: 2, period: day}
+          error_after: {count: 4, period: day}

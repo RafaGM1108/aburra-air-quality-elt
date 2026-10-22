@@ -71,3 +71,25 @@ models:
           - between: {arguments: {min_value: 5.9, max_value: 6.7}}  # Aburrá Valley
       - name: landed_on
         description: Run date of the stations list the row comes from.
+  - name: stg_open_meteo__hourly
+    description: >
+      Hourly weather at a valley-floor grid point. Data by Open-Meteo.com, CC BY 4.0.
+    data_tests:
+      - unique_combination:
+          arguments:
+            columns: [timestamp_hour]
+    columns:
+      - name: timestamp_hour
+        description: Hour of the observation (TIMESTAMPTZ).
+        data_tests: [not_null]
+      - name: date_local
+        description: Calendar date in America/Bogota.
+        data_tests: [not_null]
+      - name: precipitation
+        description: Hourly precipitation in mm.
+        data_tests:
+          - between: {arguments: {min_value: 0, max_value: 500}}
+      - name: boundary_layer_height
+        description: Planetary boundary-layer height in metres.
+        data_tests:
+          - between: {arguments: {min_value: 0, max_value: 10000}}

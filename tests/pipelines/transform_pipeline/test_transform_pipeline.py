@@ -22,10 +22,12 @@ def test_build_writes_marts_to_parquet(config: Config) -> None:
         "agg_pm25_hour_of_day.parquet",
         "agg_pm25_station_monthly.parquet",
         "dim_stations.parquet",
+        "fct_open_meteo_daily.parquet",
         "fct_pm25_daily.parquet",
         "fct_pm25_hourly.parquet",
     ]
     assert (config.paths.intermediate / "int_pm25_hourly.parquet").exists()
+    assert (config.paths.intermediate / "int_open_meteo_daily.parquet").exists()
 
 
 def test_daily_mean_needs_18_valid_hours_and_gets_an_ica(config: Config) -> None:

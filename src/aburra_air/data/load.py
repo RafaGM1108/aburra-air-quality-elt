@@ -8,6 +8,7 @@ The historical backfill file, if landed, goes to its own table with SIATA's qual
 
 import json
 import logging
+from collections.abc import Sequence
 from datetime import date, datetime, timedelta
 from pathlib import Path
 
@@ -15,11 +16,16 @@ import duckdb
 
 from aburra_air.data.extract import LANDING_DIR, TIMEZONE
 from aburra_air.data.historical import HISTORICAL_FILE, parse_historical
+from aburra_air.data.open_meteo import DAILY_DIR, HOURLY
+from aburra_air.data.open_meteo import HISTORICAL_FILE as OPEN_METEO_HISTORICAL_FILE
 
 logger = logging.getLogger(__name__)
 
 Reading = tuple[int, datetime, float | None]
 Station = tuple[int, str, str, str, float, float]
+WeatherReading = tuple[
+    datetime, float | None, float | None, float | None, float | None, float | None, float | None
+]
 
 SCHEMA = """
 CREATE SCHEMA IF NOT EXISTS raw;
@@ -46,6 +52,17 @@ CREATE TABLE IF NOT EXISTS raw.siata_stations (
     latitude DOUBLE NOT NULL,
     landed_on DATE NOT NULL
 );
+CREATE TABLE IF NOT EXISTS raw.open_meteo_hourly (
+    timestamp_hour TIMESTAMPTZ PRIMARY KEY,
+    temperature_2m DOUBLE,
+    relative_humidity_2m DOUBLE,
+    precipitation DOUBLE,
+    wind_speed_10m DOUBLE,
+    wind_direction_10m DOUBLE,
+    boundary_layer_height DOUBLE,
+    source VARCHAR NOT NULL,
+    landed_on DATE NOT NULL
+);
 """
 
 # Whole columns are bound as lists: one statement per file, ~100x faster than executemany.
@@ -66,6 +83,14 @@ SELECT unnest($code::INTEGER[]), unnest($hour::TIMESTAMPTZ[]), unnest($pm25::DOU
 
 UPSERT_STATION = """
 INSERT OR REPLACE INTO raw.siata_stations VALUES (?, ?, ?, ?, ?, ?, ?)
+"""
+
+UPSERT_WEATHER = """
+INSERT OR REPLACE INTO raw.open_meteo_hourly
+SELECT unnest($hour::TIMESTAMPTZ[]), unnest($temperature_2m::DOUBLE[]),
+    unnest($relative_humidity_2m::DOUBLE[]), unnest($precipitation::DOUBLE[]),
+    unnest($wind_speed_10m::DOUBLE[]), unnest($wind_direction_10m::DOUBLE[]),
+    unnest($boundary_layer_height::DOUBLE[]), $source::VARCHAR, $landed_on::DATE
 """
 
 
@@ -133,7 +158,7 @@ def parse_stations(body: bytes) -> list[Station]:
         raise ValueError(f"Unexpected SIATA stations response: {error!r}") from error
 
 
-def columns(rows: list[tuple[object, ...]], names: tuple[str, ...]) -> dict[str, list[object]]:
+def columns(rows: Sequence[tuple[object, ...]], names: tuple[str, ...]) -> dict[str, list[object]]:
     """Turn rows into one list per column, named for the bulk upsert parameters.
 
     Args:
@@ -144,6 +169,55 @@ def columns(rows: list[tuple[object, ...]], names: tuple[str, ...]) -> dict[str,
         ``{name: [values]}``; empty lists if there are no rows.
     """
     return {name: [row[i] for row in rows] for i, name in enumerate(names)}
+
+
+def parse_open_meteo(body: bytes) -> list[WeatherReading]:
+    """Turn a landed Open-Meteo response into timezone-aware hourly rows.
+
+    Open-Meteo returns local ISO timestamps because every extractor request specifies
+    ``timezone=America/Bogota``. Values can be null when the provider has no value for
+    a particular hour; they remain null through the warehouse and dbt models.
+
+    Args:
+        body: A landed Open-Meteo JSON response.
+
+    Returns:
+        One tuple per hour in the response.
+
+    Raises:
+        ValueError: If the response fails the extractor's shape contract.
+    """
+    try:
+        hourly = json.loads(body)["hourly"]
+        times = hourly["time"]
+        series = [hourly[name] for name in HOURLY]
+        if not times or any(len(values) != len(times) for values in series):
+            raise ValueError("no hours, or a variable has a different length than time")
+        rows: list[WeatherReading] = []
+        for values in zip(times, *series, strict=True):
+            (
+                timestamp,
+                temperature,
+                humidity,
+                precipitation,
+                wind_speed,
+                wind_direction,
+                boundary,
+            ) = values
+            rows.append(
+                (
+                    datetime.fromisoformat(str(timestamp)).replace(tzinfo=TIMEZONE),
+                    None if temperature is None else float(temperature),
+                    None if humidity is None else float(humidity),
+                    None if precipitation is None else float(precipitation),
+                    None if wind_speed is None else float(wind_speed),
+                    None if wind_direction is None else float(wind_direction),
+                    None if boundary is None else float(boundary),
+                )
+            )
+        return rows
+    except (KeyError, TypeError, ValueError) as error:
+        raise ValueError(f"Unexpected Open-Meteo hourly response: {error!r}") from error
 
 
 def load_historical(raw_dir: Path, con: duckdb.DuckDBPyConnection) -> int:
@@ -209,3 +283,47 @@ def load_siata(raw_dir: Path, con: duckdb.DuckDBPyConnection) -> int:
     if load_historical(raw_dir, con):
         files += 1
     return files
+
+
+def load_open_meteo(raw_dir: Path, con: duckdb.DuckDBPyConnection) -> int:
+    """Upsert landed Open-Meteo weather into ``raw.open_meteo_hourly``.
+
+    The historical file is applied first, then daily files in date order. Since the
+    upsert replaces matching timestamps, overlapping daily landings resolve to the
+    newest file, as required by the extractor's three-day lookback.
+
+    Args:
+        raw_dir: The ``01_raw`` folder.
+        con: Open DuckDB connection; the raw schema is created if needed.
+
+    Returns:
+        Number of weather files loaded.
+
+    Raises:
+        ValueError: If any landed response is malformed.
+    """
+    con.execute(SCHEMA)
+    files: list[tuple[Path, str, date]] = []
+    historical = raw_dir / OPEN_METEO_HISTORICAL_FILE
+    if historical.exists():
+        files.append((historical, "historical", date(2023, 7, 31)))
+    for path in sorted((raw_dir / DAILY_DIR).glob("*.json")):
+        files.append((path, "daily", date.fromisoformat(path.stem)))
+
+    for path, source, landed_on in files:
+        rows = parse_open_meteo(path.read_bytes())
+        params = columns(
+            rows,
+            (
+                "hour",
+                "temperature_2m",
+                "relative_humidity_2m",
+                "precipitation",
+                "wind_speed_10m",
+                "wind_direction_10m",
+                "boundary_layer_height",
+            ),
+        )
+        con.execute(UPSERT_WEATHER, {**params, "source": source, "landed_on": landed_on})
+        logger.info("load weather source=%s file=%s hours=%d", source, path.name, len(rows))
+    return len(files)
