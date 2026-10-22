@@ -99,6 +99,31 @@ models:
       - name: ica_color
         description: Color of the ICA category.
 
+  - name: fct_open_meteo_daily
+    description: >
+      Daily weather at the valley-floor Open-Meteo grid point. Data by Open-Meteo.com,
+      CC BY 4.0.
+    columns:
+      - name: date_local
+        description: Calendar date in America/Bogota.
+        data_tests: [unique, not_null]
+      - name: valid_hours
+        description: Number of hourly weather timestamps received.
+        data_tests:
+          - between: {arguments: {min_value: 1, max_value: 24}}
+      - name: precipitation_total
+        description: Total daily precipitation in mm.
+        data_tests:
+          - between: {arguments: {min_value: 0, max_value: 500}}
+      - name: boundary_layer_height_mean
+        description: Mean boundary-layer height in metres.
+        data_tests:
+          - between: {arguments: {min_value: 0, max_value: 10000}}
+      - name: boundary_layer_height_min
+        description: Minimum boundary-layer height in metres.
+        data_tests:
+          - between: {arguments: {min_value: 0, max_value: 10000}}
+
   - name: agg_pm25_station_monthly
     description: Monthly summary by station. Aggregated, so it can be published.
     data_tests:

@@ -2,7 +2,7 @@
 
 import duckdb
 
-from aburra_air.data.load import load_siata
+from aburra_air.data.load import load_open_meteo, load_siata
 from aburra_air.utils.config import Config, get_config
 from aburra_air.utils.log import get_logger
 
@@ -21,4 +21,5 @@ def run(config: Config | None = None) -> None:
     with duckdb.connect(config.paths.database) as con:
         con.execute("SET TimeZone = 'America/Bogota'")
         load_siata(config.paths.raw, con)
+        load_open_meteo(config.paths.raw, con)
     logger.info("Wrote %s", config.paths.database)

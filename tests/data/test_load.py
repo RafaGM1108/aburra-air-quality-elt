@@ -6,8 +6,14 @@ import duckdb
 import pytest
 
 from aburra_air.data.extract import TIMEZONE
-from aburra_air.data.load import load_siata, parse_series, parse_stations
-from tests.conftest import SIATA_FIXTURES
+from aburra_air.data.load import (
+    load_open_meteo,
+    load_siata,
+    parse_open_meteo,
+    parse_series,
+    parse_stations,
+)
+from tests.conftest import OPEN_METEO_FIXTURE, SIATA_FIXTURES
 
 
 def land_fixtures(raw: Path, run_date: str) -> Path:
@@ -63,3 +69,37 @@ def test_load_siata_with_nothing_landed(tmp_path: Path) -> None:
     with duckdb.connect() as con:
         assert load_siata(tmp_path, con) == 0
         assert con.sql("SELECT count(*) FROM raw.siata_pm25_hourly").fetchone() == (0,)
+
+
+def test_parse_open_meteo_keeps_local_time_and_missing_values() -> None:
+    readings = parse_open_meteo(OPEN_METEO_FIXTURE.read_bytes())
+    assert readings[0] == (
+        datetime(2024, 1, 1, tzinfo=TIMEZONE),
+        17.2,
+        88.0,
+        0.0,
+        3.1,
+        140.0,
+        210.0,
+    )
+    assert readings[-1][1] is None
+
+
+def test_load_open_meteo_uses_newer_daily_landing_for_overlaps(tmp_path: Path) -> None:
+    daily = tmp_path / "open_meteo" / "hourly"
+    daily.mkdir(parents=True)
+    first = OPEN_METEO_FIXTURE.read_text().replace(
+        '"temperature_2m": [17.2, 16.8, null]', '"temperature_2m": [17.2, 16.8, 15.0]'
+    )
+    second = first.replace(
+        '"temperature_2m": [17.2, 16.8, 15.0]', '"temperature_2m": [21.0, 16.8, 15.0]'
+    )
+    (daily / "2024-01-02.json").write_text(first)
+    (daily / "2024-01-03.json").write_text(second)
+
+    with duckdb.connect() as con:
+        assert load_open_meteo(tmp_path, con) == 2
+        rows = con.sql(
+            "SELECT count(*), min(temperature_2m), max(temperature_2m) FROM raw.open_meteo_hourly"
+        ).fetchone()
+    assert rows == (3, 15.0, 21.0)

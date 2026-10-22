@@ -6,6 +6,7 @@ from aburra_air.analysis.episodes import episodes
 from aburra_air.analysis.forecast import forecast_baselines
 from aburra_air.analysis.patterns import patterns
 from aburra_air.analysis.ranking import station_ranking
+from aburra_air.analysis.weather import weather_relationship
 from aburra_air.utils.config import Config, get_config
 from aburra_air.utils.log import get_logger
 
@@ -27,4 +28,5 @@ def run(config: Config | None = None) -> list[Path]:
         *patterns(paths.model_input, paths.reporting, config.analysis),
         *episodes(paths.model_input, paths.reporting, config.analysis),
         *forecast_baselines(paths.model_input, paths.reporting, config.analysis),
+        *weather_relationship(paths.model_input, paths.reporting, config.analysis),
     ]

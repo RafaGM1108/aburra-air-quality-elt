@@ -69,6 +69,9 @@ def config(tmp_path: Path) -> Config:
     shutil.copy(SIATA_FIXTURES / "pm25_stations.json", day / "stations.json")
     for code in (12, 81):
         shutil.copy(SIATA_FIXTURES / f"pm25_72h_{code}.json", day / f"{code}.json")
+    weather = tmp_path / "raw" / "open_meteo" / "hourly"
+    weather.mkdir(parents=True)
+    shutil.copy(OPEN_METEO_FIXTURE, weather / "2026-10-10.json")
     paths = config.paths.model_copy(
         update={
             "raw": tmp_path / "raw",
@@ -136,5 +139,16 @@ def marts(tmp_path: Path) -> Path:
                     count(*) FILTER (WHERE exceeds_24h_limit) AS exceedance_days
                 FROM read_parquet('{folder / "fct_pm25_daily.parquet"}') GROUP BY ALL)
             TO '{folder / "agg_pm25_station_monthly.parquet"}' (FORMAT parquet)
+        """)
+        con.execute(f"""
+            COPY (
+                SELECT DATE '2024-01-01' + i::INTEGER AS date_local, 24 AS valid_hours,
+                    18.0 + i AS temperature_mean, 80.0 AS relative_humidity_mean,
+                    CASE WHEN i < 4 THEN 0.0 ELSE 4.0 END AS precipitation_total,
+                    4.0 AS wind_speed_mean, 180.0 AS wind_direction_mean,
+                    600.0 - i * 25.0 AS boundary_layer_height_mean,
+                    300.0 - i * 10.0 AS boundary_layer_height_min
+                FROM range(10) t(i)
+            ) TO '{folder / "fct_open_meteo_daily.parquet"}' (FORMAT parquet)
         """)
     return folder
