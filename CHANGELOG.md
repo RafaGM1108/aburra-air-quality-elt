@@ -7,6 +7,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- Open-Meteo weather loading and modelling (#70): `make load` now upserts hourly
+  temperature, humidity, precipitation, wind and boundary-layer height into a dedicated
+  raw table, replacing overlapping daily hours with the newest landing. dbt builds
+  hourly and daily weather models with coverage and plausible-range tests.
+- Weather relationship analysis (#70): `make analyze` writes paired valley daily PM2.5
+  and weather data plus Pearson correlations for boundary-layer height and precipitation.
+  Results are documented only after a real historical weather landing is processed and
+  published; Open-Meteo.com attribution and its CC BY 4.0 license accompany the models
+  and findings.
+
 ## [1.0.0] - 2026-10-18
 
 First release: daily ELT of SIATA PM2.5 (and Open-Meteo weather) for the Aburrá Valley,
