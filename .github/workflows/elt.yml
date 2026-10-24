@@ -32,7 +32,7 @@ jobs:
         run: uv sync --locked
 
       - name: Restore raw landings
-        uses: actions/cache/restore@v5
+        uses: actions/cache/restore@v6
         with:
           path: data/01_raw/siata
           key: raw-siata-${{ github.run_id }}
@@ -40,7 +40,7 @@ jobs:
 
       # A separate entry, so the SIATA entry's cache version (its path) never changes.
       - name: Restore raw weather landings
-        uses: actions/cache/restore@v5
+        uses: actions/cache/restore@v6
         with:
           path: data/01_raw/open_meteo
           key: raw-open-meteo-${{ github.run_id }}
@@ -55,14 +55,14 @@ jobs:
 
       - name: Save raw landings
         if: always()
-        uses: actions/cache/save@v5
+        uses: actions/cache/save@v6
         with:
           path: data/01_raw/siata
           key: raw-siata-${{ github.run_id }}
 
       - name: Save raw weather landings
         if: always()
-        uses: actions/cache/save@v5
+        uses: actions/cache/save@v6
         with:
           path: data/01_raw/open_meteo
           key: raw-open-meteo-${{ github.run_id }}
